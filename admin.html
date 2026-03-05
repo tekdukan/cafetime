@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Café Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc, deleteDoc, query, where, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const db=getFirestore(initializeApp({
+  apiKey:"AIzaSyABJUsVfdXIKBLECWP_U0s7YxhLh_JSDm4",
+  authDomain:"staff-time-track.firebaseapp.com",
+  projectId:"staff-time-track",
+  storageBucket:"staff-time-track.firebasestorage.app",
+  messagingSenderId:"700353318316",
+  appId:"1:700353318316:web:dea92b89952064ba427e09"
+}));
+window._db=db;
+window._fs={collection,doc,getDocs,getDoc,setDoc,addDoc,updateDoc,deleteDoc,query,where,orderBy};
+window.dispatchEvent(new Event('db-ready'));
+</script>
+<style>
+:root{
+  --red:#da274d;--red-d:#b81f3f;--red-s:#fce8ed;
+  --green:#0f9d58;--green-s:#e6f4ee;
+  --amber:#d97706;--amber-s:#fff8e6;
+  --text:#111;--muted:#777;--line:#e8e8ea;--off:#f5f5f6;--white:#fff;
+  --r:14px;--sh:0 2px 14px rgba(0,0,0,.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-tap-highlight-color:transparent}
+body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--text);min-height:100dvh}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit}
+
+/* ── LOCK ── */
+#lockscreen{position:fixed;inset:0;z-index:1000;background:var(--red);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity .3s,visibility .3s}
+#lockscreen.gone{opacity:0;visibility:hidden;pointer-events:none}
+.llogo{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px}
+.lsub{font-size:.82rem;color:rgba(255,255,255,.6);margin-bottom:32px}
+.lpwinwrap{position:relative;width:100%;max-width:300px;margin-bottom:12px}
+.lpwin{width:100%;padding:14px 44px 14px 16px;border-radius:14px;border:none;font-size:1rem;background:rgba(255,255,255,.15);color:#fff;placeholder-color:rgba(255,255,255,.5)}
+.lpwin::placeholder{color:rgba(255,255,255,.5)}
+.lpwin:focus{outline:none;background:rgba(255,255,255,.25)}
+.lpwineye{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1rem;cursor:pointer;user-select:none}
+.lbtn{width:100%;max-width:300px;padding:14px;border-radius:14px;background:#fff;color:var(--red);font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;transition:opacity .15s;margin-bottom:10px}
+.lbtn:active{opacity:.85}
+.lerr{font-size:.8rem;color:rgba(255,255,255,.85);font-weight:600;min-height:20px;text-align:center}
+
+/* ── APP ── */
+#app{display:none}
+#app.visible{display:block}
+
+/* ── HEADER ── */
+.hdr{background:var(--red);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(218,39,77,.2)}
+.hlogo{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-.3px}
+.hright{display:flex;align-items:center;gap:10px}
+.hclock{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;color:rgba(255,255,255,.75)}
+.hlogout{padding:6px 14px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;font-size:.75rem;font-weight:700}
+
+/* ── TABS ── */
+.tabbar{background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:57px;z-index:40}
+.tabbar::-webkit-scrollbar{display:none}
+.tbtn{padding:13px 18px;font-size:.82rem;font-weight:700;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
+.tbtn.active{color:var(--red);border-bottom-color:var(--red)}
+
+/* ── MAIN ── */
+main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
+.sec{display:none}
+.sec.active{display:block;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
+.card-hdr{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.3px}
+.card-body{padding:14px 16px}
+
+/* ── LIVE STATUS ── */
+.live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:480px){.live-grid{grid-template-columns:repeat(3,1fr)}}
+.live-card{border-radius:12px;padding:14px 12px;display:flex;flex-direction:column;gap:6px;border:1.5px solid var(--line)}
+.live-card.on{border-color:rgba(15,157,88,.25);background:var(--green-s)}
+.live-card.off{background:var(--off)}
+.lc-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;color:#fff}
+.lc-name{font-weight:600;font-size:.88rem}
+.lc-status{font-size:.72rem;font-weight:700}
+.lc-status.on{color:var(--green)}
+.lc-status.off{color:var(--muted)}
+.lc-time{font-size:.7rem;color:var(--muted)}
+
+/* ── SUMMARY PILLS ── */
+.sum-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.sum-pill{flex:1;min-width:80px;background:var(--red-s);border-radius:12px;padding:12px 14px;text-align:center}
+.sum-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--red);line-height:1}
+.sum-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:3px}
+
+/* ── REPORTS ── */
+.rtabs{display:flex;gap:6px;margin-bottom:14px;background:#fff;border-radius:var(--r);padding:5px;box-shadow:var(--sh)}
+.rtab{flex:1;padding:9px 4px;border-radius:10px;font-size:.8rem;font-weight:700;color:var(--muted);transition:all .15s;text-align:center}
+.rtab.active{background:var(--red);color:#fff}
+.rctrl{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.rctrl input[type=date]{flex:1;padding:9px 11px;border-radius:11px;border:1.5px solid var(--line);background:#fff;font-size:.83rem}
+.xbtn{padding:9px 14px;border-radius:11px;background:var(--red);color:#fff;font-size:.78rem;font-weight:700;white-space:nowrap}
+.xbtn:active{opacity:.8}
+.xbtn.dark{background:var(--text)}
+
+/* WEEKLY TABLE */
+.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r);box-shadow:var(--sh)}
+.wtbl{width:100%;border-collapse:separate;border-spacing:0;background:#fff;min-width:460px;font-size:.76rem}
+.wtbl th{background:var(--red);color:#fff;padding:9px 7px;text-align:center;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700}
+.wtbl th:first-child{text-align:left;padding-left:13px}
+.wtbl td{padding:10px 7px;text-align:center;border-bottom:1px solid var(--line)}
+.wtbl td:first-child{text-align:left;padding-left:13px;font-weight:600;font-size:.82rem}
+.wtbl tr:last-child td{border-bottom:none}
+.wtbl tr:hover td{background:var(--red-s)}
+.wtot{font-family:'Syne',sans-serif;font-weight:800;color:var(--red)}
+.wot{color:var(--amber);font-weight:700}
+.wz{color:#ddd}
+
+/* MONTHLY CARDS */
+.mcards{display:flex;flex-direction:column;gap:10px}
+.mcard{background:#fff;border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.mav{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:#fff;flex-shrink:0}
+.minfo{flex:1;min-width:0}
+.mname{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:7px}
+.mstats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.mstat{text-align:center}
+.mval{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--red);line-height:1}
+.mval.ot{color:var(--amber)}
+.mlbl{font-size:.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:2px}
+
+/* TODAY LOG */
+.lhdr{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;padding:9px 14px;background:var(--red-s);font-size:.7rem;font-weight:700;color:var(--red);letter-spacing:.4px;text-transform:uppercase}
+.lrow{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.8rem}
+.lrow:last-child{border-bottom:none}
+.lrow:hover{background:var(--off)}
+.lname{font-weight:600}
+.lin,.lout{color:var(--muted);font-size:.73rem}
+.ldur{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--red);text-align:right;min-width:36px}
+
+/* EDIT ICON */
+.edit-icon{font-size:.85rem;cursor:pointer;opacity:.4;transition:opacity .15s;padding:2px 6px;border-radius:6px}
+.edit-icon:hover{opacity:1;background:var(--red-s)}
+
+/* ── STAFF MANAGEMENT ── */
+.staff-list-admin{display:flex;flex-direction:column;gap:10px}
+.staff-item{background:#fff;border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
+.sia-av{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:#fff;flex-shrink:0}
+.sia-info{flex:1;min-width:0}
+.sia-name{font-weight:600;font-size:.92rem}
+.sia-role{font-size:.72rem;color:var(--muted)}
+.sia-actions{display:flex;gap:6px}
+.sia-btn{padding:7px 12px;border-radius:9px;font-size:.75rem;font-weight:700;transition:opacity .15s}
+.sia-btn:active{opacity:.7}
+.sia-edit{background:var(--off);color:var(--text);border:1.5px solid var(--line)}
+.sia-del{background:rgba(218,39,77,.1);color:var(--red);border:1.5px solid rgba(218,39,77,.15)}
+
+.add-staff-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:var(--r);border:2px dashed var(--line);color:var(--muted);font-size:.88rem;font-weight:600;transition:border-color .15s,color .15s;margin-top:4px}
+.add-staff-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:#fff;border-radius:22px 22px 0 0;padding:22px 20px 36px;width:100%;max-width:500px;animation:su .25s ease;max-height:92dvh;overflow-y:auto}
+@keyframes su{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhandle{width:36px;height:4px;border-radius:4px;background:var(--line);margin:0 auto 18px}
+.mtitle{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;margin-bottom:18px;text-align:center}
+.mfield{margin-bottom:14px}
+.mfield label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.mfield input,.mfield select{width:100%;padding:12px 14px;border-radius:11px;border:1.5px solid var(--line);font-size:.92rem;color:var(--text);background:var(--off);transition:border-color .15s;-webkit-appearance:none}
+.mfield input:focus,.mfield select:focus{outline:none;border-color:var(--red);background:#fff}
+.mfield .hint{font-size:.72rem;color:var(--muted);margin-top:4px}
+.color-grid{display:flex;gap:8px;flex-wrap:wrap}
+.col-swatch{width:36px;height:36px;border-radius:10px;cursor:pointer;border:3px solid transparent;transition:transform .1s,border-color .1s}
+.col-swatch.sel{border-color:var(--text);transform:scale(1.1)}
+.mbtn-row{display:flex;gap:8px;margin-top:6px}
+.mbtn{flex:1;padding:13px;border-radius:12px;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;transition:opacity .15s}
+.mbtn:active{opacity:.8}
+.mbtn.save{background:var(--red);color:#fff}
+.mbtn.cancel{background:var(--off);color:var(--muted)}
+.mbtn.danger{background:rgba(218,39,77,.1);color:var(--red)}
+
+/* ── EDIT SESSION MODAL ── */
+.mfield .inrow{display:flex;gap:8px}
+.mfield .inrow input{flex:1}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--text);color:#fff;padding:11px 22px;border-radius:28px;font-size:.82rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SPINNER */
+.sp{display:inline-block;width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sw{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem;padding:20px}
+
+/* EMPTY */
+.empty{text-align:center;padding:28px 16px;color:var(--muted);font-size:.85rem}
+.eico{font-size:1.8rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lockscreen">
+  <div class="llogo">☕ Admin</div>
+  <div class="lsub">Owner access only</div>
+  <div class="lpwinwrap">
+    <input class="lpwin" type="password" id="lpw" placeholder="Admin password" autocomplete="current-password">
+    <span class="lpwineye" onclick="toggleLockEye()">👁</span>
+  </div>
+  <button class="lbtn" onclick="tryUnlock()">Enter</button>
+  <div class="lerr" id="lerr"></div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+  <header class="hdr">
+    <div class="hlogo">☕ Admin Panel</div>
+    <div class="hright">
+      <div class="hclock" id="hclock"></div>
+      <button class="hlogout" onclick="logout()">Lock</button>
+    </div>
+  </header>
+
+  <div class="tabbar">
+    <button class="tbtn active" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="tbtn" onclick="showTab('reports',this)">Reports</button>
+    <button class="tbtn" onclick="showTab('staff',this)">Staff</button>
+    <button class="tbtn" onclick="showTab('log',this)">Edit Records</button>
+  </div>
+
+  <main>
+
+    <!-- DASHBOARD -->
+    <div class="sec active" id="tab-dashboard">
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-title">LIVE STATUS</div>
+          <div id="duty-count" style="font-size:.75rem;color:var(--muted);font-weight:600"></div>
+        </div>
+        <div class="card-body">
+          <div class="live-grid" id="live-grid"><div class="sw"><div class="sp"></div>Loading…</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">TODAY SUMMARY</div></div>
+        <div class="card-body">
+          <div class="sum-row" id="today-sum"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><div class="card-title">TODAY'S ENTRIES</div></div>
+        <div id="today-log"></div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="sec" id="tab-reports">
+      <div class="rtabs">
+        <button class="rtab active" id="rt-today" onclick="swr('today')">Today</button>
+        <button class="rtab" id="rt-week"  onclick="swr('week')">Weekly</button>
+        <button class="rtab" id="rt-month" onclick="swr('month')">Monthly</button>
+      </div>
+      <div class="rctrl">
+        <input type="date" id="rdate">
+        <button class="xbtn" onclick="exportCSV()">⬇ CSV</button>
+        <button class="xbtn dark" onclick="window.print()">🖨</button>
+      </div>
+      <div id="rbody"><div class="sw"><div class="sp"></div></div></div>
+    </div>
+
+    <!-- STAFF MANAGEMENT -->
+    <div class="sec" id="tab-staff">
+      <div class="staff-list-admin" id="staff-admin-list">
+        <div class="sw"><div class="sp"></div>Loading…</div>
+      </div>
+      <button class="add-staff-btn" onclick="openAddStaff()">＋ Add new staff member</button>
+    </div>
+
+    <!-- EDIT RECORDS -->
+    <div class="sec" id="tab-log">
+      <div class="rctrl">
+        <input type="date" id="log-date">
+        <button class="xbtn" onclick="loadLogRecords()">Load</button>
+      </div>
+      <div id="log-records"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── STAFF MODAL ── -->
+<div class="modal-overlay" id="staff-modal">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="sm-title">Add Staff</div>
+    <div class="mfield"><label>Name</label><input id="sf-name" type="text" placeholder="Full name"></div>
+    <div class="mfield"><label>Role</label>
+      <select id="sf-role">
+        <option>Barista</option><option>Cashier</option><option>Supervisor</option><option>Manager</option><option>Other</option>
+      </select>
+    </div>
+    <div class="mfield">
+      <label>Password</label>
+      <input id="sf-pw" type="text" placeholder="Staff login password">
+      <div class="hint">Staff use this to clock in/out on the main page</div>
+    </div>
+    <div class="mfield">
+      <label>Color</label>
+      <div class="color-grid" id="color-grid"></div>
+    </div>
+    <div class="mbtn-row">
+      <button class="mbtn cancel" onclick="closeModal('staff-modal')">Cancel</button>
+      <button class="mbtn danger" id="sm-del" style="display:none" onclick="deleteStaff()">Delete</button>
+      <button class="mbtn save" onclick="saveStaff()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── EDIT SESSION MODAL ── -->
+<div class="modal-overlay" id="session-modal">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="esm-title">Edit Record</div>
+    <div class="mfield"><label>Staff</label><input id="es-staff" type="text" disabled style="opacity:.6"></div>
+    <div class="mfield"><label>Date</label><input id="es-date" type="date"></div>
+    <div class="mfield">
+      <label>Clock In Time</label>
+      <input id="es-in" type="time">
+    </div>
+    <div class="mfield">
+      <label>Clock Out Time</label>
+      <input id="es-out" type="time" placeholder="Leave empty if still active">
+    </div>
+    <div class="mbtn-row">
+      <button class="mbtn cancel" onclick="closeModal('session-modal')">Cancel</button>
+      <button class="mbtn danger" onclick="deleteSession()">Delete</button>
+      <button class="mbtn save" onclick="saveSession()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+const ADMIN_PASSWORD = 'admin1234'; // ← CHANGE THIS
+const OT_HOURS = 8;
+const COLORS = ['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22','#c0762b','#2c3e50'];
+// ══════════════════════════════════════════
+
+let db, fs;
+function waitDb(){return new Promise(r=>{if(window._db){db=window._db;fs=window._fs;r();}else window.addEventListener('db-ready',()=>{db=window._db;fs=window._fs;r();},{once:true});})}
+
+let allStaff=[], clockStates={};
+let _rm='today', _ls=[];
+let _editStaffId=null, _selColor=COLORS[0];
+let _editSessionId=null;
+
+// ── LOCK ─────────────────────────────────
+function tryUnlock(){
+  const pw=document.getElementById('lpw').value;
+  if(pw===ADMIN_PASSWORD){
+    localStorage.setItem('cafe_admin_unlock',Date.now()+8*3600000);
+    document.getElementById('lockscreen').classList.add('gone');
+    document.getElementById('app').classList.add('visible');
+    initApp();
+  } else {
+    document.getElementById('lerr').textContent='Wrong password';
+    document.getElementById('lpw').value='';
+    setTimeout(()=>document.getElementById('lerr').textContent='',2000);
+  }
+}
+function logout(){localStorage.removeItem('cafe_admin_unlock');location.reload();}
+function toggleLockEye(){const f=document.getElementById('lpw');f.type=f.type==='password'?'text':'password';}
+document.getElementById('lpw').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
+
+// Auto-unlock
+const saved=localStorage.getItem('cafe_admin_unlock');
+if(saved&&Date.now()<+saved){document.getElementById('lockscreen').classList.add('gone');document.getElementById('app').classList.add('visible');waitDb().then(()=>initApp());}
+
+// ── INIT ─────────────────────────────────
+async function initApp(){
+  updateClock();setInterval(updateClock,10000);
+  document.getElementById('rdate').value=iso(new Date());
+  document.getElementById('log-date').value=iso(new Date());
+  buildColorGrid();
+  await loadAll();
+  renderDashboard();
+}
+
+async function loadAll(){
+  await waitDb();
+  const [sSnap,csSnap]=await Promise.all([
+    fs.getDocs(fs.collection(db,'staff')),
+    fs.getDocs(fs.collection(db,'clockStates'))
+  ]);
+  allStaff=[];sSnap.forEach(d=>allStaff.push({id:d.id,...d.data()}));
+  clockStates={};csSnap.forEach(d=>clockStates[d.id]=d.data());
+}
+
+// ── DASHBOARD ────────────────────────────
+async function renderDashboard(){
+  // Live grid
+  let onDuty=0;
+  const lg=document.getElementById('live-grid');
+  lg.innerHTML=allStaff.map(s=>{
+    const cs=clockStates[s.id];
+    const on=!!(cs&&cs.in&&!cs.out);
+    if(on)onDuty++;
+    const mins=on?Math.floor((Date.now()-cs.in)/60000):0;
+    const h=Math.floor(mins/60),m=mins%60;
+    return `<div class="live-card ${on?'on':'off'}">
+      <div class="lc-av" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
+      <div class="lc-name">${s.name}</div>
+      <div class="lc-role" style="font-size:.7rem;color:var(--muted)">${s.role}</div>
+      <div class="lc-status ${on?'on':'off'}">${on?'● On duty':'○ Off'}</div>
+      ${on?`<div class="lc-time">${ft(cs.in)} · ${h}h${m}m</div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('duty-count').textContent=`${onDuty} of ${allStaff.length} on duty`;
+
+  // Today summary
+  const s=dayStart(new Date()),e=s+86399999;
+  const sess=await fetchSess(s,e);
+  const totalH=sess.filter(x=>x.out).reduce((a,x)=>a+(x.out-x.in)/3600000,0).toFixed(1);
+  const unique=new Set(sess.map(x=>x.staffId)).size;
+  document.getElementById('today-sum').innerHTML=`
+    <div class="sum-pill"><div class="sum-val">${onDuty}</div><div class="sum-lbl">On Duty</div></div>
+    <div class="sum-pill"><div class="sum-val">${unique}</div><div class="sum-lbl">Worked Today</div></div>
+    <div class="sum-pill"><div class="sum-val">${totalH}</div><div class="sum-lbl">Total Hrs</div></div>`;
+
+  // Today log
+  const tl=document.getElementById('today-log');
+  if(!sess.length){tl.innerHTML='<div class="empty"><div class="eico">📋</div>No entries yet</div>';return;}
+  tl.innerHTML=`<div class="lhdr"><span>Staff</span><span>In</span><span>Out</span><span>Hrs</span></div>`
+    +sess.map(s=>{
+      const st=allStaff.find(x=>x.id===s.staffId);
+      const dur=s.out?((s.out-s.in)/3600000).toFixed(1):'–';
+      return `<div class="lrow">
+        <span class="lname">${st?.name||'?'}</span>
+        <span class="lin">${ft(s.in)}</span>
+        <span class="lout">${s.out?ft(s.out):'Active'}</span>
+        <span class="ldur">${dur}</span>
+      </div>`;
+    }).join('');
+}
+
+// ── REPORTS ──────────────────────────────
+function swr(m){
+  _rm=m;
+  ['today','week','month'].forEach(x=>document.getElementById(`rt-${x}`).classList.toggle('active',x===m));
+  renderReport();
+}
+
+async function renderReport(){
+  const el=document.getElementById('rbody');
+  el.innerHTML='<div class="sw"><div class="sp"></div></div>';
+  const dv=document.getElementById('rdate').value;
+  const ref=dv?new Date(dv):new Date();ref.setHours(12,0,0,0);
+  let from,to;
+  if(_rm==='today'){from=dayStart(ref);to=from+86399999;}
+  else if(_rm==='week'){const mon=weekMon(ref);from=mon;to=mon+7*86400000-1;}
+  else{from=new Date(ref.getFullYear(),ref.getMonth(),1).getTime();to=new Date(ref.getFullYear(),ref.getMonth()+1,0,23,59,59,999).getTime();}
+  _ls=await fetchSess(from,to);
+  if(_rm==='today')el.innerHTML=renderTodayRpt(_ls);
+  else if(_rm==='week')el.innerHTML=renderWeekRpt(_ls,from);
+  else el.innerHTML=renderMonthRpt(_ls);
+}
+
+function renderTodayRpt(sess){
+  if(!sess.length)return emptyState('No entries for this day');
+  return `<div class="card"><div class="lhdr"><span>Staff</span><span>In</span><span>Out</span><span>Hrs</span></div>`
+    +sess.map(s=>{
+      const st=allStaff.find(x=>x.id===s.staffId);
+      const dur=s.out?((s.out-s.in)/3600000).toFixed(2):'–';
+      return `<div class="lrow"><span class="lname">${st?.name||'?'}</span><span class="lin">${ft(s.in)}</span><span class="lout">${s.out?ft(s.out):'Active'}</span><span class="ldur">${dur}</span></div>`;
+    }).join('')+'</div>';
+}
+
+function renderWeekRpt(sess,fromTs){
+  const days=Array.from({length:7},(_,i)=>new Date(fromTs+i*86400000));
+  const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][iso(d)]=0;});});
+  sess.forEach(s=>{if(!s.out)return;const k=iso(new Date(s.in));if(g[s.staffId]&&k in g[s.staffId])g[s.staffId][k]+=(s.out-s.in)/3600000;});
+  const DL=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const today=iso(new Date());
+  let html=`<div class="twrap"><table class="wtbl"><thead><tr><th>Staff</th>${DL.map((d,i)=>`<th style="${iso(days[i])===today?'background:#b81f3f':''}">${d}<br><small style="opacity:.6;font-size:.6rem">${days[i].getDate()}/${days[i].getMonth()+1}</small></th>`).join('')}<th>Total</th></tr></thead><tbody>`;
+  allStaff.forEach(s=>{
+    let tot=0;
+    const cells=days.map(d=>{const h=g[s.id][iso(d)]||0;tot+=h;if(!h)return`<td class="wz">–</td>`;return`<td class="${h>OT_HOURS?'wot':''}${''}">${h.toFixed(1)}</td>`;});
+    html+=`<tr><td>${s.name}</td>${cells.join('')}<td class="wtot">${tot.toFixed(1)}h</td></tr>`;
+  });
+  return html+'</tbody></table></div>';
+}
+
+function renderMonthRpt(sess){
+  if(!sess.length)return emptyState('No data for this month');
+  const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0,ot:0};});
+  sess.forEach(s=>{if(!s.out)return;const dur=s.out-s.in;const dh=dur/3600000;ps[s.staffId].days.add(iso(new Date(s.in)));ps[s.staffId].tot+=dur;if(dh>OT_HOURS)ps[s.staffId].ot+=(dh-OT_HOURS)*3600000;});
+  return `<div class="mcards">${allStaff.map(s=>{
+    const d=ps[s.id];const days=d.days.size;const totH=(d.tot/3600000).toFixed(1);const avg=days?(d.tot/3600000/days).toFixed(1):'0.0';const otH=(d.ot/3600000).toFixed(1);
+    return `<div class="mcard">
+      <div class="mav" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
+      <div class="minfo">
+        <div class="mname">${s.name} <span style="font-size:.7rem;color:var(--muted)">${s.role}</span></div>
+        <div class="mstats">
+          <div class="mstat"><div class="mval">${days}</div><div class="mlbl">Days</div></div>
+          <div class="mstat"><div class="mval">${totH}</div><div class="mlbl">Total</div></div>
+          <div class="mstat"><div class="mval">${avg}</div><div class="mlbl">Avg</div></div>
+          <div class="mstat"><div class="mval ${+otH>0?'ot':''}">${otH}</div><div class="mlbl">OT</div></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ── EXPORT CSV ────────────────────────────
+function exportCSV(){
+  if(!_ls.length){toast('No data to export');return;}
+  let rows;
+  if(_rm==='today'){
+    rows=[['Staff','Role','Date','Clock In','Clock Out','Hours']];
+    _ls.forEach(s=>{const st=allStaff.find(x=>x.id===s.staffId)||{name:'?',role:'?'};rows.push([st.name,st.role,iso(new Date(s.in)),ft(s.in),s.out?ft(s.out):'',s.out?((s.out-s.in)/3600000).toFixed(2):'']);});
+  } else if(_rm==='week'){
+    rows=[['Staff','Mon','Tue','Wed','Thu','Fri','Sat','Sun','Total']];
+    const dv=document.getElementById('rdate').value;const ref=dv?new Date(dv):new Date();ref.setHours(12,0,0,0);
+    const days=Array.from({length:7},(_,i)=>new Date(weekMon(ref)+i*86400000));
+    const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][iso(d)]=0;});});
+    _ls.forEach(s=>{if(!s.out)return;const k=iso(new Date(s.in));if(g[s.staffId]&&k in g[s.staffId])g[s.staffId][k]+=(s.out-s.in)/3600000;});
+    allStaff.forEach(s=>{const c=days.map(d=>(g[s.id][iso(d)]||0).toFixed(1));rows.push([s.name,...c,c.reduce((a,v)=>a+parseFloat(v),0).toFixed(1)]);});
+  } else {
+    rows=[['Staff','Role','Days Worked','Total Hours','Avg Shift','Overtime']];
+    const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0,ot:0};});
+    _ls.forEach(s=>{if(!s.out)return;const dur=s.out-s.in;const dh=dur/3600000;ps[s.staffId].days.add(iso(new Date(s.in)));ps[s.staffId].tot+=dur;if(dh>OT_HOURS)ps[s.staffId].ot+=(dh-OT_HOURS)*3600000;});
+    allStaff.forEach(s=>{const d=ps[s.id];const days=d.days.size;rows.push([s.name,s.role,days,(d.tot/3600000).toFixed(1),days?(d.tot/3600000/days).toFixed(1):'0.0',(d.ot/3600000).toFixed(1)]);});
+  }
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`cafe-${_rm}-${iso(new Date())}.csv`;a.click();
+  toast('CSV downloaded ✓');
+}
+
+// ── STAFF MANAGEMENT ─────────────────────
+function renderStaffAdmin(){
+  const el=document.getElementById('staff-admin-list');
+  if(!allStaff.length){el.innerHTML='<div class="empty"><div class="eico">👤</div>No staff yet</div>';return;}
+  el.innerHTML=allStaff.map(s=>`
+    <div class="staff-item">
+      <div class="sia-av" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
+      <div class="sia-info">
+        <div class="sia-name">${s.name}</div>
+        <div class="sia-role">${s.role} · pw: ${s.password}</div>
+      </div>
+      <div class="sia-actions">
+        <button class="sia-btn sia-edit" onclick='openEditStaff(${JSON.stringify(s)})'>Edit</button>
+      </div>
+    </div>`).join('');
+}
+
+function buildColorGrid(){
+  document.getElementById('color-grid').innerHTML=COLORS.map((c,i)=>
+    `<div class="col-swatch${i===0?' sel':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`
+  ).join('');
+}
+function selectColor(c,el){
+  _selColor=c;
+  document.querySelectorAll('.col-swatch').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function openAddStaff(){
+  _editStaffId=null;
+  document.getElementById('sm-title').textContent='Add Staff Member';
+  document.getElementById('sf-name').value='';
+  document.getElementById('sf-role').value='Barista';
+  document.getElementById('sf-pw').value='';
+  document.getElementById('sm-del').style.display='none';
+  _selColor=COLORS[0];
+  document.querySelectorAll('.col-swatch').forEach((el,i)=>el.classList.toggle('sel',i===0));
+  document.getElementById('staff-modal').classList.add('open');
+}
+function openEditStaff(s){
+  if(typeof s==='string')s=JSON.parse(s);
+  _editStaffId=s.id;
+  document.getElementById('sm-title').textContent='Edit Staff';
+  document.getElementById('sf-name').value=s.name;
+  document.getElementById('sf-role').value=s.role;
+  document.getElementById('sf-pw').value=s.password;
+  document.getElementById('sm-del').style.display='inline-block';
+  _selColor=s.color||COLORS[0];
+  document.querySelectorAll('.col-swatch').forEach(el=>el.classList.toggle('sel',el.style.background===_selColor||el.style.backgroundColor===_selColor));
+  document.getElementById('staff-modal').classList.add('open');
+}
+
+async function saveStaff(){
+  const name=document.getElementById('sf-name').value.trim();
+  const role=document.getElementById('sf-role').value;
+  const pw=document.getElementById('sf-pw').value.trim();
+  if(!name){toast('Name is required');return;}
+  if(!pw){toast('Password is required');return;}
+  const data={name,role,password:pw,color:_selColor};
+  if(_editStaffId){
+    await fs.updateDoc(fs.doc(db,'staff',_editStaffId),data);
+    toast(`${name} updated ✓`);
+  } else {
+    await fs.addDoc(fs.collection(db,'staff'),data);
+    toast(`${name} added ✓`);
+  }
+  closeModal('staff-modal');
+  await loadAll();
+  renderStaffAdmin();
+}
+
+async function deleteStaff(){
+  if(!confirm(`Delete ${document.getElementById('sf-name').value}? This cannot be undone.`))return;
+  await fs.deleteDoc(fs.doc(db,'staff',_editStaffId));
+  toast('Staff member deleted');
+  closeModal('staff-modal');
+  await loadAll();
+  renderStaffAdmin();
+}
+
+// ── EDIT RECORDS ─────────────────────────
+async function loadLogRecords(){
+  const dv=document.getElementById('log-date').value;
+  if(!dv)return;
+  const from=new Date(dv);from.setHours(0,0,0,0);
+  const to=from.getTime()+86399999;
+  const sess=await fetchSess(from.getTime(),to);
+  const el=document.getElementById('log-records');
+  if(!sess.length){el.innerHTML=`<div class="empty"><div class="eico">📋</div>No records for this date</div>`;return;}
+  el.innerHTML=`<div class="card">
+    <div class="lhdr" style="grid-template-columns:1fr auto auto auto auto">
+      <span>Staff</span><span>In</span><span>Out</span><span>Hrs</span><span></span>
+    </div>`+
+    sess.map(s=>{
+      const st=allStaff.find(x=>x.id===s.staffId);
+      const dur=s.out?((s.out-s.in)/3600000).toFixed(1):'–';
+      return `<div class="lrow" style="grid-template-columns:1fr auto auto auto auto">
+        <span class="lname">${st?.name||'?'}</span>
+        <span class="lin">${ft(s.in)}</span>
+        <span class="lout">${s.out?ft(s.out):'Active'}</span>
+        <span class="ldur">${dur}</span>
+        <span class="edit-icon" onclick='openEditSession(${JSON.stringify(s)})'>✏️</span>
+      </div>`;
+    }).join('')+'</div>';
+}
+
+function openEditSession(s){
+  if(typeof s==='string')s=JSON.parse(s);
+  _editSessionId=s.id;
+  const st=allStaff.find(x=>x.id===s.staffId);
+  document.getElementById('esm-title').textContent='Edit Record';
+  document.getElementById('es-staff').value=st?.name||'?';
+  const inDate=new Date(s.in);
+  document.getElementById('es-date').value=iso(inDate);
+  document.getElementById('es-in').value=`${String(inDate.getHours()).padStart(2,'0')}:${String(inDate.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('es-out').value=s.out?`${String(new Date(s.out).getHours()).padStart(2,'0')}:${String(new Date(s.out).getMinutes()).padStart(2,'0')}` :'';
+  document.getElementById('session-modal').classList.add('open');
+}
+
+async function saveSession(){
+  const dateStr=document.getElementById('es-date').value;
+  const inTime=document.getElementById('es-in').value;
+  const outTime=document.getElementById('es-out').value;
+  if(!dateStr||!inTime){toast('Date and clock-in time required');return;}
+  const inTs=new Date(`${dateStr}T${inTime}`).getTime();
+  const outTs=outTime?new Date(`${dateStr}T${outTime}`).getTime():null;
+  if(outTs&&outTs<=inTs){toast('Clock-out must be after clock-in');return;}
+  await fs.updateDoc(fs.doc(db,'sessions',_editSessionId),{in:inTs,out:outTs});
+  toast('Record updated ✓');
+  closeModal('session-modal');
+  loadLogRecords();
+}
+
+async function deleteSession(){
+  if(!confirm('Delete this record? This cannot be undone.'))return;
+  await fs.deleteDoc(fs.doc(db,'sessions',_editSessionId));
+  toast('Record deleted');
+  closeModal('session-modal');
+  loadLogRecords();
+}
+
+// ── NAV ───────────────────────────────────
+function showTab(name,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  btn.classList.add('active');
+  if(name==='dashboard')renderDashboard();
+  else if(name==='reports')renderReport();
+  else if(name==='staff')renderStaffAdmin();
+  else if(name==='log'){document.getElementById('log-records').innerHTML='';loadLogRecords();}
+}
+
+// ── UTILS ────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+// Close overlay on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+async function fetchSess(from,to){
+  const q=fs.query(fs.collection(db,'sessions'),fs.where('in','>=',from),fs.where('in','<=',to));
+  const snap=await fs.getDocs(q);const rows=[];snap.forEach(d=>rows.push({id:d.id,...d.data()}));
+  return rows.sort((a,b)=>b.in-a.in);
+}
+function ft(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function iso(d){return new Date(d).toISOString().slice(0,10);}
+function dayStart(d){const r=new Date(d);r.setHours(0,0,0,0);return r.getTime();}
+function weekMon(d){const day=d.getDay(),r=new Date(d);r.setDate(d.getDate()-day+(day===0?-6:1));r.setHours(0,0,0,0);return r.getTime();}
+function emptyState(m){return`<div class="empty"><div class="eico">📊</div>${m}</div>`;}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function updateClock(){document.getElementById('hclock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+
+// Refresh dashboard every 60s
+setInterval(()=>{
+  if(document.getElementById('tab-dashboard').classList.contains('active')) renderDashboard();
+},60000);
+</script>
+</body>
+</html>
