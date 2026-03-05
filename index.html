@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PUUFU — Clock In/Out</title>
+<title>Café — Clock In/Out</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -59,29 +59,58 @@ input{font-family:inherit}
 .sstatus{font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:8px;background:var(--off);color:var(--muted)}
 .sstatus.on{background:var(--green-s);color:var(--green)}
 
-/* PW CARD */
-.pwcard{background:#fff;border-radius:20px;padding:24px 22px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
-.pwwho{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+/* PIN CARD */
+.pwcard{background:#fff;border-radius:24px;padding:24px 22px 20px;width:100%;max-width:340px;box-shadow:0 4px 28px rgba(0,0,0,.09)}
+
+/* Who bar */
+.pwwho{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .pwav{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0}
 .pwname{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800}
 .pwrole{font-size:.73rem;color:var(--muted)}
 
-.statusbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:18px;font-size:.8rem;font-weight:600}
+/* Status bar */
+.statusbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:20px;font-size:.8rem;font-weight:600}
 .statusbar.in{background:var(--green-s);color:var(--green)}
 .statusbar.out{background:var(--red-s);color:var(--red)}
 
-.pwinwrap{position:relative;margin-bottom:10px}
-.pwinput{width:100%;padding:13px 44px 13px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:1rem;color:var(--text);background:var(--off);transition:border-color .15s;-webkit-appearance:none}
-.pwinput:focus{outline:none;border-color:var(--red);background:#fff}
-.pwtoggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1rem;color:var(--muted);cursor:pointer;user-select:none;padding:4px}
-.pwerr{font-size:.76rem;color:var(--red);font-weight:600;margin-bottom:12px;min-height:18px}
+/* PIN dots */
+.pin-label{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;text-align:center;margin-bottom:14px}
+.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:20px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);background:transparent;transition:background .12s,border-color .12s,transform .12s}
+.pin-dot.filled{background:var(--red);border-color:var(--red);transform:scale(1.1)}
+.pin-dot.error{background:var(--red);border-color:var(--red);animation:shake .4s ease}
 
-.abtn{width:100%;padding:15px;border-radius:13px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.2px;transition:transform .1s,opacity .15s;margin-bottom:10px}
-.abtn:active{transform:scale(.97)}
-.abtn.ci{background:var(--red);color:#fff}
-.abtn.co{background:var(--text);color:#fff}
-.abtn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+/* PIN pad */
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.pk{
+  height:68px;border-radius:16px;
+  background:var(--off);
+  border:1.5px solid var(--line);
+  color:var(--text);
+  font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .1s,transform .08s,border-color .1s;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.pk:active{background:var(--red-s);border-color:var(--red);transform:scale(.92)}
+.pk.zero{grid-column:2}
+.pk.del{font-size:1.1rem;color:var(--muted);background:transparent;border-color:transparent}
+.pk.del:active{background:var(--off);border-color:var(--line)}
+
+/* Action label above pad */
+.action-label{
+  text-align:center;margin-bottom:16px;
+  font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
+  padding:10px 16px;border-radius:10px;
+}
+.action-label.ci{background:var(--red-s);color:var(--red)}
+.action-label.co{background:var(--off);color:var(--text)}
+
+.pwerr{font-size:.76rem;color:var(--red);font-weight:600;text-align:center;min-height:18px;margin-bottom:8px}
 .backbtn{width:100%;padding:11px;border-radius:12px;background:var(--off);color:var(--muted);font-size:.85rem;font-weight:600}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 
 /* SUCCESS */
 .sucwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px 24px;width:100%;max-width:360px}
@@ -105,36 +134,65 @@ input{font-family:inherit}
 <!-- PAGE 1: SELECT STAFF -->
 <div class="page active" id="p-select">
   <div class="hdr">
-    <div class="hdr-logo">🥞 PUUFU</div>
+    <div class="hdr-logo">☕ Café</div>
     <div class="hdr-sub" id="d1"></div>
   </div>
   <div class="content">
-    <div class="slabel">Kimsiniz</div>
+    <div class="slabel">Who are you?</div>
     <div class="sgrid" id="sgrid">
       <div class="loadwrap"><div class="spin"></div>Loading…</div>
     </div>
   </div>
 </div>
 
-<!-- PAGE 2: PASSWORD + ACTION -->
+<!-- PAGE 2: PIN + ACTION -->
 <div class="page" id="p-action">
   <div class="hdr">
-    <div class="hdr-logo">🥞 PUUFU</div>
+    <div class="hdr-logo">☕ Café</div>
     <div class="hdr-sub" id="d2"></div>
   </div>
   <div class="content">
     <div class="pwcard">
+
+      <!-- Who -->
       <div class="pwwho">
         <div class="pwav" id="pa-av"></div>
         <div><div class="pwname" id="pa-name"></div><div class="pwrole" id="pa-role"></div></div>
       </div>
+
+      <!-- Current status -->
       <div class="statusbar" id="pa-status"></div>
-      <div class="pwinwrap">
-        <input class="pwinput" type="password" id="pwf" placeholder="Your password" autocomplete="current-password">
-        <span class="pwtoggle" id="peye" onclick="toggleEye()">👁</span>
+
+      <!-- Action label -->
+      <div class="action-label" id="action-label">Clock In</div>
+
+      <!-- PIN dots -->
+      <div class="pin-label">Enter your 4-digit PIN</div>
+      <div class="pin-dots">
+        <div class="pin-dot" id="pd0"></div>
+        <div class="pin-dot" id="pd1"></div>
+        <div class="pin-dot" id="pd2"></div>
+        <div class="pin-dot" id="pd3"></div>
       </div>
+
+      <!-- Error -->
       <div class="pwerr" id="pwerr"></div>
-      <button class="abtn" id="abtn" onclick="submitAction()">–</button>
+
+      <!-- PIN pad -->
+      <div class="pin-pad">
+        <button class="pk" onclick="pp('1')">1</button>
+        <button class="pk" onclick="pp('2')">2</button>
+        <button class="pk" onclick="pp('3')">3</button>
+        <button class="pk" onclick="pp('4')">4</button>
+        <button class="pk" onclick="pp('5')">5</button>
+        <button class="pk" onclick="pp('6')">6</button>
+        <button class="pk" onclick="pp('7')">7</button>
+        <button class="pk" onclick="pp('8')">8</button>
+        <button class="pk" onclick="pp('9')">9</button>
+        <button class="pk zero" onclick="pp('0')">0</button>
+        <button class="pk del" onclick="pd()">⌫</button>
+      </div>
+
       <button class="backbtn" onclick="goBack()">← Back to staff list</button>
     </div>
   </div>
@@ -143,7 +201,7 @@ input{font-family:inherit}
 <!-- PAGE 3: SUCCESS -->
 <div class="page" id="p-success">
   <div class="hdr">
-    <div class="hdr-logo">🥞 PUUFU</div>
+    <div class="hdr-logo">☕ Café</div>
     <div class="hdr-sub" id="d3"></div>
   </div>
   <div class="content">
@@ -232,27 +290,46 @@ function selectStaff(s){
   sb.className=`statusbar ${on?'in':'out'}`;
   sb.innerHTML=on?`✅ On duty since <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Currently not clocked in';
 
-  const ab=document.getElementById('abtn');
-  ab.textContent=on?'Clock Out':'Clock In';
-  ab.className=`abtn ${on?'co':'ci'}`;
-  ab.disabled=false;
+  const al=document.getElementById('action-label');
+  al.textContent=on?'Clock Out':'Clock In';
+  al.className=`action-label ${on?'co':'ci'}`;
 
-  document.getElementById('pwf').value='';
+  // Reset PIN
+  _pin='';
+  updDots();
   document.getElementById('pwerr').textContent='';
   showPage('p-action');
-  setTimeout(()=>document.getElementById('pwf').focus(),300);
+}
+
+// PIN logic
+let _pin='';
+function pp(d){
+  if(_pin.length>=4)return;
+  _pin+=d;
+  updDots();
+  if(_pin.length===4) setTimeout(submitAction, 80); // tiny delay so last dot animates
+}
+function pd(){ _pin=_pin.slice(0,-1); updDots(); }
+function updDots(){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('pd'+i);
+    el.classList.toggle('filled',i<_pin.length);
+    el.classList.remove('error');
+  }
+}
+function shakeErr(msg){
+  document.getElementById('pwerr').textContent=msg;
+  for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.add('error');
+  setTimeout(()=>{ _pin=''; updDots(); document.getElementById('pwerr').textContent=''; },700);
 }
 
 async function submitAction(){
-  const pw=document.getElementById('pwf').value.trim();
   const err=document.getElementById('pwerr');
-  err.textContent='';
-  if(!pw){err.textContent='Please enter your password';return;}
-  if(pw!==sel.password){err.textContent='Wrong password — try again';document.getElementById('pwf').value='';document.getElementById('pwf').focus();return;}
+  if(_pin!==sel.password){ shakeErr('Wrong PIN — try again'); return; }
 
-  const ab=document.getElementById('abtn');
-  ab.disabled=true;
-  ab.textContent='Saving…';
+  // Disable pad visually
+  document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='none');
+  err.textContent='';
 
   const cs=clockStates[sel.id];
   const on=!!(cs&&cs.in&&!cs.out);
@@ -271,7 +348,10 @@ async function submitAction(){
       clockStates[sel.id]={in:cs.in,out:now};
       showSuccess('out',sel,now);
     }
-  }catch(e){err.textContent='Connection error — try again';ab.disabled=false;ab.textContent=on?'Clock Out':'Clock In';}
+  }catch(e){
+    document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='');
+    shakeErr('Connection error — try again');
+  }
 }
 
 function showSuccess(type,staff,ts){
@@ -286,12 +366,9 @@ function showSuccess(type,staff,ts){
 
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function goBack(){showPage('p-select');renderGrid();}
-function reset(){sel=null;showPage('p-select');renderGrid();}
+function reset(){sel=null;_pin='';showPage('p-select');renderGrid();}
 function ft(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
 function setDates(){const d=new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
-function toggleEye(){const f=document.getElementById('pwf'),e=document.getElementById('peye');f.type=f.type==='password'?'text':'password';e.textContent=f.type==='password'?'👁':'🙈';}
-
-document.getElementById('pwf').addEventListener('keydown',e=>{if(e.key==='Enter')submitAction();});
 
 init().catch(()=>{
   document.getElementById('sgrid').innerHTML='<div style="grid-column:span 2;text-align:center;color:#da274d;padding:32px;font-size:.85rem">Connection failed.<br>Please reload.</div>';
