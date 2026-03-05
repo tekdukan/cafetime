@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Café — Clock In/Out</title>
+<title>Puufu — Clock In/Out</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -134,7 +134,7 @@ input{font-family:inherit}
 <!-- PAGE 1: SELECT STAFF -->
 <div class="page active" id="p-select">
   <div class="hdr">
-    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-logo">🥞 Puufu</div>
     <div class="hdr-sub" id="d1"></div>
   </div>
   <div class="content">
@@ -148,7 +148,7 @@ input{font-family:inherit}
 <!-- PAGE 2: PIN + ACTION -->
 <div class="page" id="p-action">
   <div class="hdr">
-    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-logo">🥞 Puufu</div>
     <div class="hdr-sub" id="d2"></div>
   </div>
   <div class="content">
@@ -201,7 +201,7 @@ input{font-family:inherit}
 <!-- PAGE 3: SUCCESS -->
 <div class="page" id="p-success">
   <div class="hdr">
-    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-logo">🥞 Puufu</div>
     <div class="hdr-sub" id="d3"></div>
   </div>
   <div class="content">
@@ -355,7 +355,7 @@ async function submitAction(){
 }
 
 function showSuccess(type,staff,ts){
-  document.getElementById('sico').textContent=type==='in'?'☕':'👋';
+  document.getElementById('sico').textContent=type==='in'?'🥞':'👋';
   document.getElementById('sico').className=`sucicon ${type}`;
   document.getElementById('sname').textContent=staff.name;
   document.getElementById('smsg').textContent=type==='in'?'Successfully clocked in':'Successfully clocked out';
