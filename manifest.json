@@ -2,7 +2,7 @@
   "name": "Puufu Admin",
   "short_name": "Puufu Staff",
   "description": "Puufu Kafe Personel Yönetim Paneli",
-  "start_url": "/admin.html",
+  "start_url": "https://tekdukan.github.io/cafetime/admin.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#da274d",
