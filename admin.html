@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>PUUFU Admin</title>
+<title>Puufu Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -205,7 +205,7 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 
 <!-- ── LOCK SCREEN ── -->
 <div id="lockscreen">
-  <div class="llogo">☕ Admin</div>
+  <div class="llogo">🥞 Admin</div>
   <div class="lsub">Owner access only</div>
   <div class="lpwinwrap">
     <input class="lpwin" type="password" id="lpw" placeholder="Admin password" autocomplete="current-password">
@@ -218,7 +218,7 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 <!-- ── APP ── -->
 <div id="app">
   <header class="hdr">
-    <div class="hlogo">PUUFU Admin</div>
+    <div class="hlogo">🥞 Admin Panel</div>
     <div class="hright">
       <div class="hclock" id="hclock"></div>
       <button class="hlogout" onclick="logout()">Lock</button>
@@ -302,13 +302,13 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
     <div class="mfield"><label>Name</label><input id="sf-name" type="text" placeholder="Full name"></div>
     <div class="mfield"><label>Role</label>
       <select id="sf-role">
-        <option>Aşçı</option><option>Garson</option>
+        <option>Aşçı</option><option>Garson</option><option>Supervisor</option>
       </select>
     </div>
     <div class="mfield">
-      <label>Password</label>
-      <input id="sf-pw" type="text" placeholder="Staff login password">
-      <div class="hint">Staff use this to clock in/out on the main page</div>
+      <label>PIN (4 digits)</label>
+      <input id="sf-pw" type="text" placeholder="e.g. 1234" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+      <div class="hint">Staff enter this PIN to clock in/out on the main page</div>
     </div>
     <div class="mfield">
       <label>Color</label>
