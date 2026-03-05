@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Puufu Admin</title>
+<meta name="theme-color" content="#da274d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Puufu Admin">
+<link rel="apple-touch-icon" href="https://www.puufu.com.tr/Content/images/puufu-social-card-512.png">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -205,31 +211,31 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 
 <!-- ── LOCK SCREEN ── -->
 <div id="lockscreen">
-  <div class="llogo">🥞 Admin</div>
-  <div class="lsub">Owner access only</div>
+  <div class="llogo">☕ Puufu Admin</div>
+  <div class="lsub">Yönetici girişi</div>
   <div class="lpwinwrap">
-    <input class="lpwin" type="password" id="lpw" placeholder="Admin password" autocomplete="current-password">
+    <input class="lpwin" type="password" id="lpw" placeholder="Yönetici şifresi" autocomplete="current-password">
     <span class="lpwineye" onclick="toggleLockEye()">👁</span>
   </div>
-  <button class="lbtn" onclick="tryUnlock()">Enter</button>
+  <button class="lbtn" onclick="tryUnlock()">Giriş</button>
   <div class="lerr" id="lerr"></div>
 </div>
 
 <!-- ── APP ── -->
 <div id="app">
   <header class="hdr">
-    <div class="hlogo">🥞 Admin Panel</div>
+    <div class="hlogo">☕ Puufu Admin</div>
     <div class="hright">
       <div class="hclock" id="hclock"></div>
-      <button class="hlogout" onclick="logout()">Lock</button>
+      <button class="hlogout" onclick="logout()">Kilitle</button>
     </div>
   </header>
 
   <div class="tabbar">
-    <button class="tbtn active" onclick="showTab('dashboard',this)">Dashboard</button>
-    <button class="tbtn" onclick="showTab('reports',this)">Reports</button>
-    <button class="tbtn" onclick="showTab('staff',this)">Staff</button>
-    <button class="tbtn" onclick="showTab('log',this)">Edit Records</button>
+    <button class="tbtn active" onclick="showTab('dashboard',this)">Genel</button>
+    <button class="tbtn" onclick="showTab('reports',this)">Raporlar</button>
+    <button class="tbtn" onclick="showTab('staff',this)">Personel</button>
+    <button class="tbtn" onclick="showTab('log',this)">Kayıt Düzenle</button>
   </div>
 
   <main>
@@ -238,23 +244,23 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
     <div class="sec active" id="tab-dashboard">
       <div class="card">
         <div class="card-hdr">
-          <div class="card-title">LIVE STATUS</div>
+          <div class="card-title">CANLI DURUM</div>
           <div id="duty-count" style="font-size:.75rem;color:var(--muted);font-weight:600"></div>
         </div>
         <div class="card-body">
-          <div class="live-grid" id="live-grid"><div class="sw"><div class="sp"></div>Loading…</div></div>
+          <div class="live-grid" id="live-grid"><div class="sw"><div class="sp"></div>Yükleniyor…</div></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-hdr"><div class="card-title">TODAY SUMMARY</div></div>
+        <div class="card-hdr"><div class="card-title">BUGÜNÜN ÖZETİ</div></div>
         <div class="card-body">
           <div class="sum-row" id="today-sum"></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-hdr"><div class="card-title">TODAY'S ENTRIES</div></div>
+        <div class="card-hdr"><div class="card-title">BUGÜNÜN GİRİŞLERİ</div></div>
         <div id="today-log"></div>
       </div>
     </div>
@@ -262,9 +268,9 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
     <!-- REPORTS -->
     <div class="sec" id="tab-reports">
       <div class="rtabs">
-        <button class="rtab active" id="rt-today" onclick="swr('today')">Today</button>
-        <button class="rtab" id="rt-week"  onclick="swr('week')">Weekly</button>
-        <button class="rtab" id="rt-month" onclick="swr('month')">Monthly</button>
+        <button class="rtab active" id="rt-today" onclick="swr('today')">Bugün</button>
+        <button class="rtab" id="rt-week"  onclick="swr('week')">Haftalık</button>
+        <button class="rtab" id="rt-month" onclick="swr('month')">Aylık</button>
       </div>
       <div class="rctrl">
         <input type="date" id="rdate">
@@ -277,16 +283,16 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
     <!-- STAFF MANAGEMENT -->
     <div class="sec" id="tab-staff">
       <div class="staff-list-admin" id="staff-admin-list">
-        <div class="sw"><div class="sp"></div>Loading…</div>
+        <div class="sw"><div class="sp"></div>Yükleniyor…</div>
       </div>
-      <button class="add-staff-btn" onclick="openAddStaff()">＋ Add new staff member</button>
+      <button class="add-staff-btn" onclick="openAddStaff()">＋ Yeni personel ekle</button>
     </div>
 
     <!-- EDIT RECORDS -->
     <div class="sec" id="tab-log">
       <div class="rctrl">
         <input type="date" id="log-date">
-        <button class="xbtn" onclick="loadLogRecords()">Load</button>
+        <button class="xbtn" onclick="loadLogRecords()">Yükle</button>
       </div>
       <div id="log-records"></div>
     </div>
@@ -298,26 +304,26 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 <div class="modal-overlay" id="staff-modal">
   <div class="modal-sheet">
     <div class="mhandle"></div>
-    <div class="mtitle" id="sm-title">Add Staff</div>
-    <div class="mfield"><label>Name</label><input id="sf-name" type="text" placeholder="Full name"></div>
-    <div class="mfield"><label>Role</label>
+    <div class="mtitle" id="sm-title">Personel Ekle</div>
+    <div class="mfield"><label>Ad Soyad</label><input id="sf-name" type="text" placeholder="Personel adı"></div>
+    <div class="mfield"><label>Görev</label>
       <select id="sf-role">
-        <option>Aşçı</option><option>Garson</option><option>
+        <option>Barista</option><option>Kasiyer</option><option>Süpervizör</option><option>Müdür</option><option>Diğer</option>
       </select>
     </div>
     <div class="mfield">
-      <label>PIN (4 digits)</label>
-      <input id="sf-pw" type="text" placeholder="e.g. 1234" maxlength="4" inputmode="numeric" pattern="[0-9]*">
-      <div class="hint">Staff enter this PIN to clock in/out on the main page</div>
+      <label>PIN (4 rakam)</label>
+      <input id="sf-pw" type="text" placeholder="örn. 1234" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+      <div class="hint">Personel giriş/çıkış için bu PIN'i kullanır</div>
     </div>
     <div class="mfield">
-      <label>Color</label>
+      <label>Renk</label>
       <div class="color-grid" id="color-grid"></div>
     </div>
     <div class="mbtn-row">
-      <button class="mbtn cancel" onclick="closeModal('staff-modal')">Cancel</button>
-      <button class="mbtn danger" id="sm-del" style="display:none" onclick="deleteStaff()">Delete</button>
-      <button class="mbtn save" onclick="saveStaff()">Save</button>
+      <button class="mbtn cancel" onclick="closeModal('staff-modal')">İptal</button>
+      <button class="mbtn danger" id="sm-del" style="display:none" onclick="deleteStaff()">Sil</button>
+      <button class="mbtn save" onclick="saveStaff()">Kaydet</button>
     </div>
   </div>
 </div>
@@ -326,21 +332,15 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 <div class="modal-overlay" id="session-modal">
   <div class="modal-sheet">
     <div class="mhandle"></div>
-    <div class="mtitle" id="esm-title">Edit Record</div>
-    <div class="mfield"><label>Staff</label><input id="es-staff" type="text" disabled style="opacity:.6"></div>
-    <div class="mfield"><label>Date</label><input id="es-date" type="date"></div>
-    <div class="mfield">
-      <label>Clock In Time</label>
-      <input id="es-in" type="time">
-    </div>
-    <div class="mfield">
-      <label>Clock Out Time</label>
-      <input id="es-out" type="time" placeholder="Leave empty if still active">
-    </div>
+    <div class="mtitle" id="esm-title">Kaydı Düzenle</div>
+    <div class="mfield"><label>Personel</label><input id="es-staff" type="text" disabled style="opacity:.6"></div>
+    <div class="mfield"><label>Tarih</label><input id="es-date" type="date"></div>
+    <div class="mfield"><label>Giriş Saati</label><input id="es-in" type="time"></div>
+    <div class="mfield"><label>Çıkış Saati</label><input id="es-out" type="time" placeholder="Aktifse boş bırakın"></div>
     <div class="mbtn-row">
-      <button class="mbtn cancel" onclick="closeModal('session-modal')">Cancel</button>
-      <button class="mbtn danger" onclick="deleteSession()">Delete</button>
-      <button class="mbtn save" onclick="saveSession()">Save</button>
+      <button class="mbtn cancel" onclick="closeModal('session-modal')">İptal</button>
+      <button class="mbtn danger" onclick="deleteSession()">Sil</button>
+      <button class="mbtn save" onclick="saveSession()">Kaydet</button>
     </div>
   </div>
 </div>
@@ -350,7 +350,7 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 <script>
 // ══════════════════════════════════════════
 // CONFIG
-const ADMIN_PASSWORD = 'ShamiL2020';
+const ADMIN_PASSWORD = 'admin1234'; // ← CHANGE THIS
 const OT_HOURS = 8;
 const COLORS = ['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22','#c0762b','#2c3e50'];
 // ══════════════════════════════════════════
@@ -363,6 +363,9 @@ let _rm='today', _ls=[];
 let _editStaffId=null, _selColor=COLORS[0];
 let _editSessionId=null;
 
+// Register PWA service worker
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+
 // ── LOCK ─────────────────────────────────
 function tryUnlock(){
   const pw=document.getElementById('lpw').value;
@@ -372,7 +375,7 @@ function tryUnlock(){
     document.getElementById('app').classList.add('visible');
     initApp();
   } else {
-    document.getElementById('lerr').textContent='Wrong password';
+    document.getElementById('lerr').textContent='Yanlış şifre';
     document.getElementById('lpw').value='';
     setTimeout(()=>document.getElementById('lerr').textContent='',2000);
   }
@@ -420,11 +423,11 @@ async function renderDashboard(){
       <div class="lc-av" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
       <div class="lc-name">${s.name}</div>
       <div class="lc-role" style="font-size:.7rem;color:var(--muted)">${s.role}</div>
-      <div class="lc-status ${on?'on':'off'}">${on?'● On duty':'○ Off'}</div>
-      ${on?`<div class="lc-time">${ft(cs.in)} · ${h}h${m}m</div>`:''}
+      <div class="lc-status ${on?'on':'off'}">${on?'● Görevde':'○ Dışarıda'}</div>
+      ${on?`<div class="lc-time">${ft(cs.in)} · ${h}s${m}d</div>`:''}
     </div>`;
   }).join('');
-  document.getElementById('duty-count').textContent=`${onDuty} of ${allStaff.length} on duty`;
+  document.getElementById('duty-count').textContent=`${onDuty} / ${allStaff.length} görevde`;
 
   // Today summary
   const s=dayStart(new Date()),e=s+86399999;
@@ -432,13 +435,13 @@ async function renderDashboard(){
   const totalH=sess.filter(x=>x.out).reduce((a,x)=>a+(x.out-x.in)/3600000,0).toFixed(1);
   const unique=new Set(sess.map(x=>x.staffId)).size;
   document.getElementById('today-sum').innerHTML=`
-    <div class="sum-pill"><div class="sum-val">${onDuty}</div><div class="sum-lbl">On Duty</div></div>
-    <div class="sum-pill"><div class="sum-val">${unique}</div><div class="sum-lbl">Worked Today</div></div>
-    <div class="sum-pill"><div class="sum-val">${totalH}</div><div class="sum-lbl">Total Hrs</div></div>`;
+    <div class="sum-pill"><div class="sum-val">${onDuty}</div><div class="sum-lbl">Görevde</div></div>
+    <div class="sum-pill"><div class="sum-val">${unique}</div><div class="sum-lbl">Bugün Çalıştı</div></div>
+    <div class="sum-pill"><div class="sum-val">${totalH}</div><div class="sum-lbl">Toplam Saat</div></div>`;
 
   // Today log
   const tl=document.getElementById('today-log');
-  if(!sess.length){tl.innerHTML='<div class="empty"><div class="eico">📋</div>No entries yet</div>';return;}
+  if(!sess.length){tl.innerHTML='<div class="empty"><div class="eico">📋</div>Henüz giriş yok</div>';return;}
   tl.innerHTML=`<div class="lhdr"><span>Staff</span><span>In</span><span>Out</span><span>Hrs</span></div>`
     +sess.map(s=>{
       const st=allStaff.find(x=>x.id===s.staffId);
@@ -446,7 +449,7 @@ async function renderDashboard(){
       return `<div class="lrow">
         <span class="lname">${st?.name||'?'}</span>
         <span class="lin">${ft(s.in)}</span>
-        <span class="lout">${s.out?ft(s.out):'Active'}</span>
+        <span class="lout">${s.out?ft(s.out):'Aktif'}</span>
         <span class="ldur">${dur}</span>
       </div>`;
     }).join('');
@@ -475,12 +478,12 @@ async function renderReport(){
 }
 
 function renderTodayRpt(sess){
-  if(!sess.length)return emptyState('No entries for this day');
+  if(!sess.length)return emptyState('Bu gün için kayıt yok');
   return `<div class="card"><div class="lhdr"><span>Staff</span><span>In</span><span>Out</span><span>Hrs</span></div>`
     +sess.map(s=>{
       const st=allStaff.find(x=>x.id===s.staffId);
       const dur=s.out?((s.out-s.in)/3600000).toFixed(2):'–';
-      return `<div class="lrow"><span class="lname">${st?.name||'?'}</span><span class="lin">${ft(s.in)}</span><span class="lout">${s.out?ft(s.out):'Active'}</span><span class="ldur">${dur}</span></div>`;
+      return `<div class="lrow"><span class="lname">${st?.name||'?'}</span><span class="lin">${ft(s.in)}</span><span class="lout">${s.out?ft(s.out):'Aktif'}</span><span class="ldur">${dur}</span></div>`;
     }).join('')+'</div>';
 }
 
@@ -488,7 +491,7 @@ function renderWeekRpt(sess,fromTs){
   const days=Array.from({length:7},(_,i)=>new Date(fromTs+i*86400000));
   const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][iso(d)]=0;});});
   sess.forEach(s=>{if(!s.out)return;const k=iso(new Date(s.in));if(g[s.staffId]&&k in g[s.staffId])g[s.staffId][k]+=(s.out-s.in)/3600000;});
-  const DL=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const DL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
   const today=iso(new Date());
   let html=`<div class="twrap"><table class="wtbl"><thead><tr><th>Staff</th>${DL.map((d,i)=>`<th style="${iso(days[i])===today?'background:#b81f3f':''}">${d}<br><small style="opacity:.6;font-size:.6rem">${days[i].getDate()}/${days[i].getMonth()+1}</small></th>`).join('')}<th>Total</th></tr></thead><tbody>`;
   allStaff.forEach(s=>{
@@ -500,7 +503,7 @@ function renderWeekRpt(sess,fromTs){
 }
 
 function renderMonthRpt(sess){
-  if(!sess.length)return emptyState('No data for this month');
+  if(!sess.length)return emptyState('Bu ay için kayıt yok');
   const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0,ot:0};});
   sess.forEach(s=>{if(!s.out)return;const dur=s.out-s.in;const dh=dur/3600000;ps[s.staffId].days.add(iso(new Date(s.in)));ps[s.staffId].tot+=dur;if(dh>OT_HOURS)ps[s.staffId].ot+=(dh-OT_HOURS)*3600000;});
   return `<div class="mcards">${allStaff.map(s=>{
@@ -510,10 +513,10 @@ function renderMonthRpt(sess){
       <div class="minfo">
         <div class="mname">${s.name} <span style="font-size:.7rem;color:var(--muted)">${s.role}</span></div>
         <div class="mstats">
-          <div class="mstat"><div class="mval">${days}</div><div class="mlbl">Days</div></div>
-          <div class="mstat"><div class="mval">${totH}</div><div class="mlbl">Total</div></div>
-          <div class="mstat"><div class="mval">${avg}</div><div class="mlbl">Avg</div></div>
-          <div class="mstat"><div class="mval ${+otH>0?'ot':''}">${otH}</div><div class="mlbl">OT</div></div>
+          <div class="mstat"><div class="mval">${days}</div><div class="mlbl">Gün</div></div>
+          <div class="mstat"><div class="mval">${totH}</div><div class="mlbl">Top. Saat</div></div>
+          <div class="mstat"><div class="mval">${avg}</div><div class="mlbl">Ort. Vardiya</div></div>
+          <div class="mstat"><div class="mval ${+otH>0?'ot':''}">${otH}</div><div class="mlbl">Fazla Mesai</div></div>
         </div>
       </div>
     </div>`;
@@ -522,7 +525,7 @@ function renderMonthRpt(sess){
 
 // ── EXPORT CSV ────────────────────────────
 function exportCSV(){
-  if(!_ls.length){toast('No data to export');return;}
+  if(!_ls.length){toast('Dışa aktarılacak veri yok');return;}
   let rows;
   if(_rm==='today'){
     rows=[['Staff','Role','Date','Clock In','Clock Out','Hours']];
@@ -542,22 +545,22 @@ function exportCSV(){
   }
   const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`cafe-${_rm}-${iso(new Date())}.csv`;a.click();
-  toast('CSV downloaded ✓');
+  toast('CSV indirildi ✓');
 }
 
 // ── STAFF MANAGEMENT ─────────────────────
 function renderStaffAdmin(){
   const el=document.getElementById('staff-admin-list');
-  if(!allStaff.length){el.innerHTML='<div class="empty"><div class="eico">👤</div>No staff yet</div>';return;}
+  if(!allStaff.length){el.innerHTML='<div class="empty"><div class="eico">👤</div>Henüz personel yok</div>';return;}
   el.innerHTML=allStaff.map(s=>`
     <div class="staff-item">
       <div class="sia-av" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
       <div class="sia-info">
         <div class="sia-name">${s.name}</div>
-        <div class="sia-role">${s.role} · pw: ${s.password}</div>
+        <div class="sia-role">${s.role} · PIN: ${s.password}</div>
       </div>
       <div class="sia-actions">
-        <button class="sia-btn sia-edit" onclick='openEditStaff(${JSON.stringify(s)})'>Edit</button>
+        <button class="sia-btn sia-edit" onclick='openEditStaff(${JSON.stringify(s)})'>Düzenle</button>
       </div>
     </div>`).join('');
 }
@@ -575,7 +578,7 @@ function selectColor(c,el){
 
 function openAddStaff(){
   _editStaffId=null;
-  document.getElementById('sm-title').textContent='Add Staff Member';
+  document.getElementById('sm-title').textContent='Personel Ekle';
   document.getElementById('sf-name').value='';
   document.getElementById('sf-role').value='Barista';
   document.getElementById('sf-pw').value='';
@@ -587,7 +590,7 @@ function openAddStaff(){
 function openEditStaff(s){
   if(typeof s==='string')s=JSON.parse(s);
   _editStaffId=s.id;
-  document.getElementById('sm-title').textContent='Edit Staff';
+  document.getElementById('sm-title').textContent='Personeli Düzenle';
   document.getElementById('sf-name').value=s.name;
   document.getElementById('sf-role').value=s.role;
   document.getElementById('sf-pw').value=s.password;
@@ -601,15 +604,15 @@ async function saveStaff(){
   const name=document.getElementById('sf-name').value.trim();
   const role=document.getElementById('sf-role').value;
   const pw=document.getElementById('sf-pw').value.trim();
-  if(!name){toast('Name is required');return;}
-  if(!pw){toast('Password is required');return;}
+  if(!name){toast('Ad zorunludur');return;}
+  if(!pw){toast('PIN zorunludur');return;}
   const data={name,role,password:pw,color:_selColor};
   if(_editStaffId){
     await fs.updateDoc(fs.doc(db,'staff',_editStaffId),data);
-    toast(`${name} updated ✓`);
+    toast(`${name} güncellendi ✓`);
   } else {
     await fs.addDoc(fs.collection(db,'staff'),data);
-    toast(`${name} added ✓`);
+    toast(`${name} eklendi ✓`);
   }
   closeModal('staff-modal');
   await loadAll();
@@ -617,9 +620,9 @@ async function saveStaff(){
 }
 
 async function deleteStaff(){
-  if(!confirm(`Delete ${document.getElementById('sf-name').value}? This cannot be undone.`))return;
+  if(!confirm(`${document.getElementById('sf-name').value} adlı personeli sil? Bu işlem geri alınamaz.`))return;
   await fs.deleteDoc(fs.doc(db,'staff',_editStaffId));
-  toast('Staff member deleted');
+  toast('Personel silindi');
   closeModal('staff-modal');
   await loadAll();
   renderStaffAdmin();
@@ -633,7 +636,7 @@ async function loadLogRecords(){
   const to=from.getTime()+86399999;
   const sess=await fetchSess(from.getTime(),to);
   const el=document.getElementById('log-records');
-  if(!sess.length){el.innerHTML=`<div class="empty"><div class="eico">📋</div>No records for this date</div>`;return;}
+  if(!sess.length){el.innerHTML=`<div class="empty"><div class="eico">📋</div>Bu tarih için kayıt yok</div>`;return;}
   el.innerHTML=`<div class="card">
     <div class="lhdr" style="grid-template-columns:1fr auto auto auto auto">
       <span>Staff</span><span>In</span><span>Out</span><span>Hrs</span><span></span>
@@ -668,20 +671,20 @@ async function saveSession(){
   const dateStr=document.getElementById('es-date').value;
   const inTime=document.getElementById('es-in').value;
   const outTime=document.getElementById('es-out').value;
-  if(!dateStr||!inTime){toast('Date and clock-in time required');return;}
+  if(!dateStr||!inTime){toast('Tarih ve giriş saati zorunludur');return;}
   const inTs=new Date(`${dateStr}T${inTime}`).getTime();
   const outTs=outTime?new Date(`${dateStr}T${outTime}`).getTime():null;
-  if(outTs&&outTs<=inTs){toast('Clock-out must be after clock-in');return;}
+  if(outTs&&outTs<=inTs){toast('Çıkış saati girişten sonra olmalıdır');return;}
   await fs.updateDoc(fs.doc(db,'sessions',_editSessionId),{in:inTs,out:outTs});
-  toast('Record updated ✓');
+  toast('Kayıt güncellendi ✓');
   closeModal('session-modal');
   loadLogRecords();
 }
 
 async function deleteSession(){
-  if(!confirm('Delete this record? This cannot be undone.'))return;
+  if(!confirm('Bu kaydı sil? Bu işlem geri alınamaz.'))return;
   await fs.deleteDoc(fs.doc(db,'sessions',_editSessionId));
-  toast('Record deleted');
+  toast('Kayıt silindi');
   closeModal('session-modal');
   loadLogRecords();
 }

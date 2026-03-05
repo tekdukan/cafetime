@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Puufu — Clock In/Out</title>
+<title>Puufu — Giriş/Çıkış</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -134,13 +134,13 @@ input{font-family:inherit}
 <!-- PAGE 1: SELECT STAFF -->
 <div class="page active" id="p-select">
   <div class="hdr">
-    <div class="hdr-logo">🥞 Puufu</div>
+    <div class="hdr-logo">☕ Puufu</div>
     <div class="hdr-sub" id="d1"></div>
   </div>
   <div class="content">
-    <div class="slabel">Who are you?</div>
+    <div class="slabel">Kim olduğunuzu seçin</div>
     <div class="sgrid" id="sgrid">
-      <div class="loadwrap"><div class="spin"></div>Loading…</div>
+      <div class="loadwrap"><div class="spin"></div>Yükleniyor…</div>
     </div>
   </div>
 </div>
@@ -148,37 +148,25 @@ input{font-family:inherit}
 <!-- PAGE 2: PIN + ACTION -->
 <div class="page" id="p-action">
   <div class="hdr">
-    <div class="hdr-logo">🥞 Puufu</div>
+    <div class="hdr-logo">☕ Puufu</div>
     <div class="hdr-sub" id="d2"></div>
   </div>
   <div class="content">
     <div class="pwcard">
-
-      <!-- Who -->
       <div class="pwwho">
         <div class="pwav" id="pa-av"></div>
         <div><div class="pwname" id="pa-name"></div><div class="pwrole" id="pa-role"></div></div>
       </div>
-
-      <!-- Current status -->
       <div class="statusbar" id="pa-status"></div>
-
-      <!-- Action label -->
-      <div class="action-label" id="action-label">Clock In</div>
-
-      <!-- PIN dots -->
-      <div class="pin-label">Enter your 4-digit PIN</div>
+      <div class="action-label" id="action-label">Giriş</div>
+      <div class="pin-label">4 haneli PIN'inizi girin</div>
       <div class="pin-dots">
         <div class="pin-dot" id="pd0"></div>
         <div class="pin-dot" id="pd1"></div>
         <div class="pin-dot" id="pd2"></div>
         <div class="pin-dot" id="pd3"></div>
       </div>
-
-      <!-- Error -->
       <div class="pwerr" id="pwerr"></div>
-
-      <!-- PIN pad -->
       <div class="pin-pad">
         <button class="pk" onclick="pp('1')">1</button>
         <button class="pk" onclick="pp('2')">2</button>
@@ -192,8 +180,7 @@ input{font-family:inherit}
         <button class="pk zero" onclick="pp('0')">0</button>
         <button class="pk del" onclick="pd()">⌫</button>
       </div>
-
-      <button class="backbtn" onclick="goBack()">← Back to staff list</button>
+      <button class="backbtn" onclick="goBack()">← Personel listesine dön</button>
     </div>
   </div>
 </div>
@@ -201,7 +188,7 @@ input{font-family:inherit}
 <!-- PAGE 3: SUCCESS -->
 <div class="page" id="p-success">
   <div class="hdr">
-    <div class="hdr-logo">🥞 Puufu</div>
+    <div class="hdr-logo">☕ Puufu</div>
     <div class="hdr-sub" id="d3"></div>
   </div>
   <div class="content">
@@ -210,7 +197,7 @@ input{font-family:inherit}
       <div class="sucname" id="sname"></div>
       <div class="sucmsg"  id="smsg"></div>
       <div class="suctime" id="stime"></div>
-      <button class="sucback" onclick="reset()">Done ✓</button>
+      <button class="sucback" onclick="reset()">Tamam ✓</button>
     </div>
   </div>
 </div>
@@ -234,12 +221,12 @@ async function init(){
   // Seed defaults if empty
   if(!allStaff.length){
     const defs=[
-      {name:'Alex',role:'Supervisor',password:'pass1',color:COLORS[0]},
-      {name:'Maria',role:'Barista',password:'pass2',color:COLORS[1]},
-      {name:'James',role:'Barista',password:'pass3',color:COLORS[2]},
-      {name:'Sofia',role:'Cashier',password:'pass4',color:COLORS[3]},
-      {name:'Leo',role:'Barista',password:'pass5',color:COLORS[4]},
-      {name:'Nina',role:'Cashier',password:'pass6',color:COLORS[5]},
+      {name:'Alex',role:'Süpervizör',password:'1111',color:COLORS[0]},
+      {name:'Maria',role:'Barista',password:'2222',color:COLORS[1]},
+      {name:'James',role:'Barista',password:'3333',color:COLORS[2]},
+      {name:'Sofia',role:'Kasiyer',password:'4444',color:COLORS[3]},
+      {name:'Leo',role:'Barista',password:'5555',color:COLORS[4]},
+      {name:'Nina',role:'Kasiyer',password:'6666',color:COLORS[5]},
     ];
     for(const s of defs){
       const ref=await fs.addDoc(fs.collection(db,'staff'),s);
@@ -261,7 +248,7 @@ async function init(){
 
 function renderGrid(){
   const g=document.getElementById('sgrid');
-  if(!allStaff.length){g.innerHTML='<div style="grid-column:span 2;text-align:center;color:var(--muted);padding:32px;font-size:.85rem">No staff found.<br>Contact your admin.</div>';return;}
+  if(!allStaff.length){g.innerHTML='<div style="grid-column:span 2;text-align:center;color:var(--muted);padding:32px;font-size:.85rem">Personel bulunamadı.<br>Yöneticinizle iletişime geçin.</div>';return;}
   g.innerHTML=allStaff.map(s=>{
     const cs=clockStates[s.id];
     const on=!!(cs&&cs.in&&!cs.out);
@@ -269,7 +256,7 @@ function renderGrid(){
       <div class="sav" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
       <div class="sname">${s.name}</div>
       <div class="srole">${s.role}</div>
-      <div class="sstatus${on?' on':''}">${on?'● On duty':'○ Off'}</div>
+      <div class="sstatus${on?' on':''}">${on?'● Görevde':'○ Dışarıda'}</div>
     </button>`;
   }).join('');
 }
@@ -288,10 +275,10 @@ function selectStaff(s){
 
   const sb=document.getElementById('pa-status');
   sb.className=`statusbar ${on?'in':'out'}`;
-  sb.innerHTML=on?`✅ On duty since <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Currently not clocked in';
+  sb.innerHTML=on?`✅ Görevde, giriş saati: <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Şu an görevde değil';
 
   const al=document.getElementById('action-label');
-  al.textContent=on?'Clock Out':'Clock In';
+  al.textContent=on?'Çıkış Yap':'Giriş Yap';
   al.className=`action-label ${on?'co':'ci'}`;
 
   // Reset PIN
@@ -322,10 +309,9 @@ function shakeErr(msg){
   for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.add('error');
   setTimeout(()=>{ _pin=''; updDots(); document.getElementById('pwerr').textContent=''; },700);
 }
-
 async function submitAction(){
   const err=document.getElementById('pwerr');
-  if(_pin!==sel.password){ shakeErr('Wrong PIN — try again'); return; }
+  if(_pin!==sel.password){ shakeErr('Yanlış PIN — tekrar deneyin'); return; }
 
   // Disable pad visually
   document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='none');
@@ -350,15 +336,15 @@ async function submitAction(){
     }
   }catch(e){
     document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='');
-    shakeErr('Connection error — try again');
+    shakeErr('Bağlantı hatası — tekrar deneyin');
   }
 }
 
 function showSuccess(type,staff,ts){
-  document.getElementById('sico').textContent=type==='in'?'🥞':'👋';
+  document.getElementById('sico').textContent=type==='in'?'☕':'👋';
   document.getElementById('sico').className=`sucicon ${type}`;
   document.getElementById('sname').textContent=staff.name;
-  document.getElementById('smsg').textContent=type==='in'?'Successfully clocked in':'Successfully clocked out';
+  document.getElementById('smsg').textContent=type==='in'?'Giriş yapıldı':'Çıkış yapıldı';
   document.getElementById('stime').textContent=ft(ts);
   showPage('p-success');
   setTimeout(reset,4000);
@@ -368,10 +354,10 @@ function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.
 function goBack(){showPage('p-select');renderGrid();}
 function reset(){sel=null;_pin='';showPage('p-select');renderGrid();}
 function ft(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
-function setDates(){const d=new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
+function setDates(){const d=new Date().toLocaleDateString('tr-TR',{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
 
 init().catch(()=>{
-  document.getElementById('sgrid').innerHTML='<div style="grid-column:span 2;text-align:center;color:#da274d;padding:32px;font-size:.85rem">Connection failed.<br>Please reload.</div>';
+  document.getElementById('sgrid').innerHTML='<div style="grid-column:span 2;text-align:center;color:#da274d;padding:32px;font-size:.85rem">Bağlantı hatası.<br>Lütfen sayfayı yenileyin.</div>';
 });
 </script>
 </body>
