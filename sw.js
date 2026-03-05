@@ -1,5 +1,8 @@
 const CACHE = 'puufu-admin-v1';
-const ASSETS = ['./admin.html', './manifest.json'];
+const ASSETS = [
+  '/cafetime/admin.html',
+  '/cafetime/manifest.json'
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -14,8 +17,7 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Network first for Firebase, cache fallback for app shell
-  if (e.request.url.includes('firebasejs') || e.request.url.includes('firestore')) {
+  if (e.request.url.includes('firebasejs') || e.request.url.includes('googleapis') || e.request.url.includes('firestore')) {
     e.respondWith(fetch(e.request));
     return;
   }
