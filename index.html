@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Café — Clock In/Out</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const db = getFirestore(initializeApp({
+  apiKey:"AIzaSyABJUsVfdXIKBLECWP_U0s7YxhLh_JSDm4",
+  authDomain:"staff-time-track.firebaseapp.com",
+  projectId:"staff-time-track",
+  storageBucket:"staff-time-track.firebasestorage.app",
+  messagingSenderId:"700353318316",
+  appId:"1:700353318316:web:dea92b89952064ba427e09"
+}));
+window._db=db;
+window._fs={collection,doc,getDocs,setDoc,addDoc,updateDoc};
+window.dispatchEvent(new Event('db-ready'));
+</script>
+<style>
+:root{
+  --red:#da274d;--red-d:#b81f3f;--red-s:#fce8ed;
+  --green:#0f9d58;--green-s:#e6f4ee;
+  --text:#111;--muted:#777;--line:#e8e8ea;--off:#f5f5f6;--white:#fff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-tap-highlight-color:transparent}
+body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--text);min-height:100dvh}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input{font-family:inherit}
+
+.page{display:none;min-height:100dvh;flex-direction:column}
+.page.active{display:flex;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.hdr{background:var(--red);padding:22px 24px 20px;text-align:center}
+.hdr-logo{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:#fff;letter-spacing:-.5px}
+.hdr-sub{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:3px}
+
+/* CONTENT */
+.content{flex:1;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* STEP LABEL */
+.slabel{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:18px;text-align:center}
+
+/* STAFF GRID */
+.sgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:100%;max-width:360px}
+.sbtn{background:#fff;border:2px solid var(--line);border-radius:16px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;transition:border-color .15s,transform .1s,box-shadow .15s;cursor:pointer;text-align:center}
+.sbtn:active{transform:scale(.95)}
+.sbtn.sel{border-color:var(--red);box-shadow:0 0 0 3px var(--red-s)}
+.sav{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:#fff}
+.sname{font-weight:600;font-size:.9rem}
+.srole{font-size:.7rem;color:var(--muted)}
+.sstatus{font-size:.65rem;font-weight:700;padding:3px 9px;border-radius:8px;background:var(--off);color:var(--muted)}
+.sstatus.on{background:var(--green-s);color:var(--green)}
+
+/* PW CARD */
+.pwcard{background:#fff;border-radius:20px;padding:24px 22px;width:100%;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.pwwho{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.pwav{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0}
+.pwname{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800}
+.pwrole{font-size:.73rem;color:var(--muted)}
+
+.statusbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:18px;font-size:.8rem;font-weight:600}
+.statusbar.in{background:var(--green-s);color:var(--green)}
+.statusbar.out{background:var(--red-s);color:var(--red)}
+
+.pwinwrap{position:relative;margin-bottom:10px}
+.pwinput{width:100%;padding:13px 44px 13px 14px;border-radius:12px;border:1.5px solid var(--line);font-size:1rem;color:var(--text);background:var(--off);transition:border-color .15s;-webkit-appearance:none}
+.pwinput:focus{outline:none;border-color:var(--red);background:#fff}
+.pwtoggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:1.1rem;color:var(--muted);cursor:pointer;user-select:none;padding:4px}
+.pwerr{font-size:.76rem;color:var(--red);font-weight:600;margin-bottom:12px;min-height:18px}
+
+.abtn{width:100%;padding:15px;border-radius:13px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.2px;transition:transform .1s,opacity .15s;margin-bottom:10px}
+.abtn:active{transform:scale(.97)}
+.abtn.ci{background:var(--red);color:#fff}
+.abtn.co{background:var(--text);color:#fff}
+.abtn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.backbtn{width:100%;padding:11px;border-radius:12px;background:var(--off);color:var(--muted);font-size:.85rem;font-weight:600}
+
+/* SUCCESS */
+.sucwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px 24px;width:100%;max-width:360px}
+.sucicon{width:82px;height:82px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;animation:pop .4s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.sucicon.in{background:var(--red-s)}
+.sucicon.out{background:var(--green-s)}
+.sucname{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+.sucmsg{font-size:.95rem;color:var(--muted)}
+.suctime{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:var(--red);line-height:1}
+.sucback{margin-top:8px;padding:13px 36px;border-radius:13px;background:var(--off);color:var(--text);font-size:.9rem;font-weight:700}
+
+/* SPINNER */
+.spin{display:inline-block;width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loadwrap{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--muted);font-size:.85rem;padding:40px;grid-column:span 2}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: SELECT STAFF -->
+<div class="page active" id="p-select">
+  <div class="hdr">
+    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-sub" id="d1"></div>
+  </div>
+  <div class="content">
+    <div class="slabel">Who are you?</div>
+    <div class="sgrid" id="sgrid">
+      <div class="loadwrap"><div class="spin"></div>Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 2: PASSWORD + ACTION -->
+<div class="page" id="p-action">
+  <div class="hdr">
+    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-sub" id="d2"></div>
+  </div>
+  <div class="content">
+    <div class="pwcard">
+      <div class="pwwho">
+        <div class="pwav" id="pa-av"></div>
+        <div><div class="pwname" id="pa-name"></div><div class="pwrole" id="pa-role"></div></div>
+      </div>
+      <div class="statusbar" id="pa-status"></div>
+      <div class="pwinwrap">
+        <input class="pwinput" type="password" id="pwf" placeholder="Your password" autocomplete="current-password">
+        <span class="pwtoggle" id="peye" onclick="toggleEye()">👁</span>
+      </div>
+      <div class="pwerr" id="pwerr"></div>
+      <button class="abtn" id="abtn" onclick="submitAction()">–</button>
+      <button class="backbtn" onclick="goBack()">← Back to staff list</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: SUCCESS -->
+<div class="page" id="p-success">
+  <div class="hdr">
+    <div class="hdr-logo">☕ Café</div>
+    <div class="hdr-sub" id="d3"></div>
+  </div>
+  <div class="content">
+    <div class="sucwrap">
+      <div class="sucicon" id="sico"></div>
+      <div class="sucname" id="sname"></div>
+      <div class="sucmsg"  id="smsg"></div>
+      <div class="suctime" id="stime"></div>
+      <button class="sucback" onclick="reset()">Done ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let db, fs;
+function waitDb(){return new Promise(r=>{if(window._db){db=window._db;fs=window._fs;r();}else window.addEventListener('db-ready',()=>{db=window._db;fs=window._fs;r();},{once:true});})}
+
+let allStaff=[], clockStates={}, sel=null;
+const COLORS=['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22'];
+
+async function init(){
+  setDates();
+  await waitDb();
+
+  // Load staff
+  const snap=await fs.getDocs(fs.collection(db,'staff'));
+  allStaff=[];
+  snap.forEach(d=>allStaff.push({id:d.id,...d.data()}));
+
+  // Seed defaults if empty
+  if(!allStaff.length){
+    const defs=[
+      {name:'Alex',role:'Supervisor',password:'pass1',color:COLORS[0]},
+      {name:'Maria',role:'Barista',password:'pass2',color:COLORS[1]},
+      {name:'James',role:'Barista',password:'pass3',color:COLORS[2]},
+      {name:'Sofia',role:'Cashier',password:'pass4',color:COLORS[3]},
+      {name:'Leo',role:'Barista',password:'pass5',color:COLORS[4]},
+      {name:'Nina',role:'Cashier',password:'pass6',color:COLORS[5]},
+    ];
+    for(const s of defs){
+      const ref=await fs.addDoc(fs.collection(db,'staff'),s);
+      allStaff.push({id:ref.id,...s});
+    }
+  }
+
+  // Load clock states
+  const cs=await fs.getDocs(fs.collection(db,'clockStates'));
+  clockStates={};
+  cs.forEach(d=>clockStates[d.id]=d.data());
+
+  renderGrid();
+
+  // Restore last used
+  const last=localStorage.getItem('cafe_last');
+  if(last){const f=allStaff.find(s=>s.id===last);if(f)selectStaff(f);}
+}
+
+function renderGrid(){
+  const g=document.getElementById('sgrid');
+  if(!allStaff.length){g.innerHTML='<div style="grid-column:span 2;text-align:center;color:var(--muted);padding:32px;font-size:.85rem">No staff found.<br>Contact your admin.</div>';return;}
+  g.innerHTML=allStaff.map(s=>{
+    const cs=clockStates[s.id];
+    const on=!!(cs&&cs.in&&!cs.out);
+    return `<button class="sbtn${sel?.id===s.id?' sel':''}" onclick='selectStaff(${JSON.stringify(s)})'>
+      <div class="sav" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
+      <div class="sname">${s.name}</div>
+      <div class="srole">${s.role}</div>
+      <div class="sstatus${on?' on':''}">${on?'● On duty':'○ Off'}</div>
+    </button>`;
+  }).join('');
+}
+
+function selectStaff(s){
+  if(typeof s==='string')s=JSON.parse(s);
+  sel=s;
+  localStorage.setItem('cafe_last',s.id);
+  const cs=clockStates[s.id];
+  const on=!!(cs&&cs.in&&!cs.out);
+
+  document.getElementById('pa-av').style.background=s.color||COLORS[0];
+  document.getElementById('pa-av').textContent=s.name.slice(0,2).toUpperCase();
+  document.getElementById('pa-name').textContent=s.name;
+  document.getElementById('pa-role').textContent=s.role;
+
+  const sb=document.getElementById('pa-status');
+  sb.className=`statusbar ${on?'in':'out'}`;
+  sb.innerHTML=on?`✅ On duty since <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Currently not clocked in';
+
+  const ab=document.getElementById('abtn');
+  ab.textContent=on?'Clock Out':'Clock In';
+  ab.className=`abtn ${on?'co':'ci'}`;
+  ab.disabled=false;
+
+  document.getElementById('pwf').value='';
+  document.getElementById('pwerr').textContent='';
+  showPage('p-action');
+  setTimeout(()=>document.getElementById('pwf').focus(),300);
+}
+
+async function submitAction(){
+  const pw=document.getElementById('pwf').value.trim();
+  const err=document.getElementById('pwerr');
+  err.textContent='';
+  if(!pw){err.textContent='Please enter your password';return;}
+  if(pw!==sel.password){err.textContent='Wrong password — try again';document.getElementById('pwf').value='';document.getElementById('pwf').focus();return;}
+
+  const ab=document.getElementById('abtn');
+  ab.disabled=true;
+  ab.textContent='Saving…';
+
+  const cs=clockStates[sel.id];
+  const on=!!(cs&&cs.in&&!cs.out);
+  const now=Date.now();
+
+  try{
+    if(!on){
+      const ref=await fs.addDoc(fs.collection(db,'sessions'),{staffId:sel.id,in:now,out:null});
+      await fs.setDoc(fs.doc(db,'clockStates',sel.id),{in:now,out:null,sid:ref.id});
+      clockStates[sel.id]={in:now,out:null,sid:ref.id};
+      showSuccess('in',sel,now);
+    } else {
+      if(cs.sid)await fs.updateDoc(fs.doc(db,'sessions',cs.sid),{out:now});
+      else await fs.addDoc(fs.collection(db,'sessions'),{staffId:sel.id,in:cs.in,out:now});
+      await fs.setDoc(fs.doc(db,'clockStates',sel.id),{in:cs.in,out:now,sid:cs.sid||null});
+      clockStates[sel.id]={in:cs.in,out:now};
+      showSuccess('out',sel,now);
+    }
+  }catch(e){err.textContent='Connection error — try again';ab.disabled=false;ab.textContent=on?'Clock Out':'Clock In';}
+}
+
+function showSuccess(type,staff,ts){
+  document.getElementById('sico').textContent=type==='in'?'☕':'👋';
+  document.getElementById('sico').className=`sucicon ${type}`;
+  document.getElementById('sname').textContent=staff.name;
+  document.getElementById('smsg').textContent=type==='in'?'Successfully clocked in':'Successfully clocked out';
+  document.getElementById('stime').textContent=ft(ts);
+  showPage('p-success');
+  setTimeout(reset,4000);
+}
+
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goBack(){showPage('p-select');renderGrid();}
+function reset(){sel=null;showPage('p-select');renderGrid();}
+function ft(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function setDates(){const d=new Date().toLocaleDateString([],{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
+function toggleEye(){const f=document.getElementById('pwf'),e=document.getElementById('peye');f.type=f.type==='password'?'text':'password';e.textContent=f.type==='password'?'👁':'🙈';}
+
+document.getElementById('pwf').addEventListener('keydown',e=>{if(e.key==='Enter')submitAction();});
+
+init().catch(()=>{
+  document.getElementById('sgrid').innerHTML='<div style="grid-column:span 2;text-align:center;color:#da274d;padding:32px;font-size:.85rem">Connection failed.<br>Please reload.</div>';
+});
+</script>
+</body>
+</html>
