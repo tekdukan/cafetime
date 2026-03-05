@@ -1,6 +1,6 @@
 {
   "name": "Puufu Admin",
-  "short_name": "Puufu",
+  "short_name": "Puufu Staff",
   "description": "Puufu Kafe Personel Yönetim Paneli",
   "start_url": "/admin.html",
   "display": "standalone",
