@@ -73,39 +73,26 @@ input{font-family:inherit}
 .statusbar.in{background:var(--green-s);color:var(--green)}
 .statusbar.out{background:var(--red-s);color:var(--red)}
 
-/* PIN dots */
-.pin-label{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;text-align:center;margin-bottom:14px}
-.pin-dots{display:flex;justify-content:center;gap:14px;margin-bottom:20px}
-.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);background:transparent;transition:background .12s,border-color .12s,transform .12s}
-.pin-dot.filled{background:var(--red);border-color:var(--red);transform:scale(1.1)}
-.pin-dot.error{background:var(--red);border-color:var(--red);animation:shake .4s ease}
-
-/* PIN pad */
-.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.pk{
-  height:68px;border-radius:16px;
-  background:var(--off);
-  border:1.5px solid var(--line);
-  color:var(--text);
-  font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-  transition:background .1s,transform .08s,border-color .1s;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-}
-.pk:active{background:var(--red-s);border-color:var(--red);transform:scale(.92)}
-.pk.zero{grid-column:2}
-.pk.del{font-size:1.1rem;color:var(--muted);background:transparent;border-color:transparent}
-.pk.del:active{background:var(--off);border-color:var(--line)}
-
-/* Action label above pad */
-.action-label{
-  text-align:center;margin-bottom:16px;
-  font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
-  padding:10px 16px;border-radius:10px;
-}
+/* Action label */
+.action-label{text-align:center;margin-bottom:20px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;padding:10px 16px;border-radius:10px}
 .action-label.ci{background:var(--red-s);color:var(--red)}
 .action-label.co{background:var(--off);color:var(--text)}
+
+/* PIN dots — tappable to open keyboard */
+.pin-label{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;text-align:center;margin-bottom:18px}
+.pin-dots-wrap{position:relative;display:flex;justify-content:center;gap:18px;margin-bottom:10px;cursor:pointer;padding:16px 0}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--line);background:transparent;transition:background .12s,border-color .12s,transform .12s;pointer-events:none}
+.pin-dot.filled{background:var(--red);border-color:var(--red);transform:scale(1.15)}
+.pin-dot.error{background:#ff4444;border-color:#ff4444;animation:shake .4s ease}
+.pin-hint{text-align:center;font-size:.73rem;color:var(--muted);margin-bottom:18px}
+.pin-hint.active{color:var(--red);font-weight:600}
+
+/* Hidden real input */
+.pin-real-input{
+  position:fixed;left:-9999px;top:0;
+  opacity:0;width:1px;height:1px;
+  font-size:16px;/* prevent iOS zoom */
+}
 
 .pwerr{font-size:.76rem;color:var(--red);font-weight:600;text-align:center;min-height:18px;margin-bottom:8px}
 .backbtn{width:100%;padding:11px;border-radius:12px;background:var(--off);color:var(--muted);font-size:.85rem;font-weight:600}
@@ -158,28 +145,20 @@ input{font-family:inherit}
         <div><div class="pwname" id="pa-name"></div><div class="pwrole" id="pa-role"></div></div>
       </div>
       <div class="statusbar" id="pa-status"></div>
-      <div class="action-label" id="action-label">Giriş</div>
-      <div class="pin-label">4 haneli PIN'inizi girin</div>
-      <div class="pin-dots">
+      <div class="action-label" id="action-label">Giriş Yap</div>
+      <div class="pin-label">PIN Kodunuz</div>
+      <div class="pin-dots-wrap" id="pin-dots-wrap" onclick="focusPinInput()">
         <div class="pin-dot" id="pd0"></div>
         <div class="pin-dot" id="pd1"></div>
         <div class="pin-dot" id="pd2"></div>
         <div class="pin-dot" id="pd3"></div>
       </div>
+      <div class="pin-hint" id="pin-hint">Klavyeyi açmak için dokunun</div>
+      <!-- Hidden input - captures native number keyboard -->
+      <input class="pin-real-input" id="pin-input"
+        type="tel" inputmode="numeric" pattern="[0-9]*"
+        maxlength="4" autocomplete="off" autocorrect="off">
       <div class="pwerr" id="pwerr"></div>
-      <div class="pin-pad">
-        <button class="pk" onclick="pp('1')">1</button>
-        <button class="pk" onclick="pp('2')">2</button>
-        <button class="pk" onclick="pp('3')">3</button>
-        <button class="pk" onclick="pp('4')">4</button>
-        <button class="pk" onclick="pp('5')">5</button>
-        <button class="pk" onclick="pp('6')">6</button>
-        <button class="pk" onclick="pp('7')">7</button>
-        <button class="pk" onclick="pp('8')">8</button>
-        <button class="pk" onclick="pp('9')">9</button>
-        <button class="pk zero" onclick="pp('0')">0</button>
-        <button class="pk del" onclick="pd()">⌫</button>
-      </div>
       <button class="backbtn" onclick="goBack()">← Personel listesine dön</button>
     </div>
   </div>
@@ -281,22 +260,50 @@ function selectStaff(s){
   al.textContent=on?'Çıkış Yap':'Giriş Yap';
   al.className=`action-label ${on?'co':'ci'}`;
 
-  // Reset PIN
+  // Reset PIN state
   _pin='';
+  const inp=document.getElementById('pin-input');
+  inp.value='';
   updDots();
   document.getElementById('pwerr').textContent='';
+  document.getElementById('pin-hint').textContent='Klavyeyi açmak için dokunun';
+  document.getElementById('pin-hint').classList.remove('active');
+
   showPage('p-action');
+  setTimeout(focusPinInput, 350);
 }
 
-// PIN logic
 let _pin='';
-function pp(d){
-  if(_pin.length>=4)return;
-  _pin+=d;
-  updDots();
-  if(_pin.length===4) setTimeout(submitAction, 80); // tiny delay so last dot animates
+
+function focusPinInput(){
+  const inp=document.getElementById('pin-input');
+  inp.value=_pin; // keep existing digits
+  inp.focus();
+  // Move cursor to end
+  inp.setSelectionRange(inp.value.length, inp.value.length);
+  document.getElementById('pin-hint').textContent='PIN giriliyor…';
+  document.getElementById('pin-hint').classList.add('active');
 }
-function pd(){ _pin=_pin.slice(0,-1); updDots(); }
+
+function initPinInput(){
+  const inp=document.getElementById('pin-input');
+  inp.addEventListener('input',()=>{
+    const val=inp.value.replace(/\D/g,'').slice(0,4);
+    inp.value=val;
+    _pin=val;
+    updDots();
+    if(val.length===4) setTimeout(submitAction,120);
+  });
+  inp.addEventListener('blur',()=>{
+    document.getElementById('pin-hint').textContent='Klavyeyi açmak için dokunun';
+    document.getElementById('pin-hint').classList.remove('active');
+  });
+  inp.addEventListener('focus',()=>{
+    document.getElementById('pin-hint').textContent='PIN giriliyor…';
+    document.getElementById('pin-hint').classList.add('active');
+  });
+}
+
 function updDots(){
   for(let i=0;i<4;i++){
     const el=document.getElementById('pd'+i);
@@ -307,14 +314,23 @@ function updDots(){
 function shakeErr(msg){
   document.getElementById('pwerr').textContent=msg;
   for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.add('error');
-  setTimeout(()=>{ _pin=''; updDots(); document.getElementById('pwerr').textContent=''; },700);
+  setTimeout(()=>{
+    _pin='';
+    const inp=document.getElementById('pin-input');
+    inp.value='';
+    updDots();
+    document.getElementById('pwerr').textContent='';
+    focusPinInput();
+  },800);
 }
+
 async function submitAction(){
   const err=document.getElementById('pwerr');
   if(_pin!==sel.password){ shakeErr('Yanlış PIN — tekrar deneyin'); return; }
 
-  // Disable pad visually
-  document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='none');
+  // Blur keyboard, show saving
+  document.getElementById('pin-input').blur();
+  document.getElementById('pin-hint').textContent='Kaydediliyor…';
   err.textContent='';
 
   const cs=clockStates[sel.id];
@@ -335,7 +351,7 @@ async function submitAction(){
       showSuccess('out',sel,now);
     }
   }catch(e){
-    document.querySelectorAll('.pk').forEach(b=>b.style.pointerEvents='');
+    document.getElementById('pin-hint').textContent='Klavyeyi açmak için dokunun';
     shakeErr('Bağlantı hatası — tekrar deneyin');
   }
 }
@@ -352,9 +368,12 @@ function showSuccess(type,staff,ts){
 
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 function goBack(){showPage('p-select');renderGrid();}
-function reset(){sel=null;_pin='';showPage('p-select');renderGrid();}
-function ft(ts){return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+function reset(){sel=null;_pin='';document.getElementById('pin-input').value='';showPage('p-select');renderGrid();}
+function ft(ts){return new Date(ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+function fh(ms){if(!ms||ms<=0)return'–';const t=Math.round(ms/60000);const h=Math.floor(t/60),m=t%60;return h>0?`${h}s ${m}d`:`${m}d`;}
 function setDates(){const d=new Date().toLocaleDateString('tr-TR',{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
+
+initPinInput();
 
 init().catch(()=>{
   document.getElementById('sgrid').innerHTML='<div style="grid-column:span 2;text-align:center;color:#da274d;padding:32px;font-size:.85rem">Bağlantı hatası.<br>Lütfen sayfayı yenileyin.</div>';
