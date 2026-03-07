@@ -225,10 +225,6 @@ async function init(){
   cs.forEach(d=>clockStates[d.id]=d.data());
 
   renderGrid();
-
-  // Restore last used
-  const last=localStorage.getItem('cafe_last');
-  if(last){const f=allStaff.find(s=>s.id===last);if(f)selectStaff(f);}
 }
 
 function renderGrid(){
