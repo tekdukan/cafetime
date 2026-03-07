@@ -1,0 +1,19 @@
+{
+  "name": "Puufu Giriş",
+  "short_name": "Puufu",
+  "description": "Puufu Kafe Personel Giriş/Çıkış",
+  "start_url": "/cafetime/index.html",
+  "scope": "/cafetime/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#da274d",
+  "theme_color": "#da274d",
+  "icons": [
+    {
+      "src": "https://www.puufu.com.tr/Content/images/puufu-social-card-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
