@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,7 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, getDocs, setDoc, addDoc, updateDoc }
+import { getFirestore, collection, doc, getDocs, getDoc, setDoc, addDoc, updateDoc }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const db = getFirestore(initializeApp({
   apiKey:"AIzaSyABJUsVfdXIKBLECWP_U0s7YxhLh_JSDm4",
@@ -24,13 +24,14 @@ const db = getFirestore(initializeApp({
   appId:"1:700353318316:web:dea92b89952064ba427e09"
 }));
 window._db=db;
-window._fs={collection,doc,getDocs,setDoc,addDoc,updateDoc};
+window._fs={collection,doc,getDocs,getDoc,setDoc,addDoc,updateDoc};
 window.dispatchEvent(new Event('db-ready'));
 </script>
 <style>
 :root{
   --red:#da274d;--red-d:#b81f3f;--red-s:#fce8ed;
   --green:#0f9d58;--green-s:#e6f4ee;
+  --amber:#d97706;--amber-s:#fff8e6;
   --text:#111;--muted:#777;--line:#e8e8ea;--off:#f5f5f6;--white:#fff;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -49,7 +50,7 @@ input{font-family:inherit}
 .hdr-sub{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:3px}
 
 /* CONTENT */
-.content{flex:1;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.content{flex:1;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* STEP LABEL */
 .slabel{font-family:'Syne',sans-serif;font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:18px;text-align:center}
@@ -74,36 +75,43 @@ input{font-family:inherit}
 .pwname{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800}
 .pwrole{font-size:.73rem;color:var(--muted)}
 
+/* Shift info bar */
+.shift-bar{padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:.78rem;font-weight:600;background:var(--off);color:var(--muted);line-height:1.4}
+.shift-bar.has-shift{background:#eef4ff;color:#2563eb}
+.shift-bar.no-shift{background:#fff8e6;color:var(--amber)}
+.shift-bar strong{display:block;font-size:.82rem;margin-bottom:2px}
+
 /* Status bar */
-.statusbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:20px;font-size:.8rem;font-weight:600}
+.statusbar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;margin-bottom:12px;font-size:.8rem;font-weight:600}
 .statusbar.in{background:var(--green-s);color:var(--green)}
 .statusbar.out{background:var(--red-s);color:var(--red)}
 
 /* Action label */
-.action-label{text-align:center;margin-bottom:20px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;padding:10px 16px;border-radius:10px}
+.action-label{text-align:center;margin-bottom:16px;font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;padding:10px 16px;border-radius:10px}
 .action-label.ci{background:var(--red-s);color:var(--red)}
 .action-label.co{background:var(--off);color:var(--text)}
 
-/* PIN dots — tappable to open keyboard */
-.pin-label{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;text-align:center;margin-bottom:18px}
-.pin-dots-wrap{position:relative;display:flex;justify-content:center;gap:18px;margin-bottom:10px;cursor:pointer;padding:16px 0}
+/* PIN dots */
+.pin-label{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;text-align:center;margin-bottom:14px}
+.pin-dots-wrap{position:relative;display:flex;justify-content:center;gap:18px;margin-bottom:10px;cursor:pointer;padding:14px 0}
 .pin-dot{width:18px;height:18px;border-radius:50%;border:2.5px solid var(--line);background:transparent;transition:background .12s,border-color .12s,transform .12s;pointer-events:none}
 .pin-dot.filled{background:var(--red);border-color:var(--red);transform:scale(1.15)}
 .pin-dot.error{background:#ff4444;border-color:#ff4444;animation:shake .4s ease}
-.pin-hint{text-align:center;font-size:.73rem;color:var(--muted);margin-bottom:18px}
+.pin-hint{text-align:center;font-size:.73rem;color:var(--muted);margin-bottom:14px}
 .pin-hint.active{color:var(--red);font-weight:600}
-
-/* Hidden real input */
-.pin-real-input{
-  position:fixed;left:-9999px;top:0;
-  opacity:0;width:1px;height:1px;
-  font-size:16px;/* prevent iOS zoom */
-}
-
+.pin-real-input{position:fixed;left:-9999px;top:0;opacity:0;width:1px;height:1px;font-size:16px;}
 .pwerr{font-size:.76rem;color:var(--red);font-weight:600;text-align:center;min-height:18px;margin-bottom:8px}
 .backbtn{width:100%;padding:11px;border-radius:12px;background:var(--off);color:var(--muted);font-size:.85rem;font-weight:600}
 
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* BLOCKED SCREEN */
+.blockcard{background:#fff;border-radius:24px;padding:28px 22px;width:100%;max-width:340px;box-shadow:0 4px 28px rgba(0,0,0,.09);text-align:center}
+.block-icon{font-size:2.4rem;margin-bottom:12px}
+.block-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:8px}
+.block-msg{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:20px}
+.block-shift{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--red);margin-bottom:4px}
+.block-sub{font-size:.75rem;color:var(--muted);margin-bottom:20px}
 
 /* SUCCESS */
 .sucwrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:40px 24px;width:100%;max-width:360px}
@@ -114,6 +122,10 @@ input{font-family:inherit}
 .sucname{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
 .sucmsg{font-size:.95rem;color:var(--muted)}
 .suctime{font-family:'Syne',sans-serif;font-size:2.4rem;font-weight:800;color:var(--red);line-height:1}
+/* Paid hours notice on success */
+.suc-shift-note{font-size:.78rem;padding:8px 14px;border-radius:10px;background:var(--off);color:var(--muted);max-width:260px;line-height:1.4}
+.suc-shift-note.warn{background:var(--amber-s);color:var(--amber)}
+.suc-shift-note.ok{background:var(--green-s);color:var(--green)}
 .sucback{margin-top:8px;padding:13px 36px;border-radius:13px;background:var(--off);color:var(--text);font-size:.9rem;font-weight:700}
 
 /* SPINNER */
@@ -138,7 +150,25 @@ input{font-family:inherit}
   </div>
 </div>
 
-<!-- PAGE 2: PIN + ACTION -->
+<!-- PAGE 2: BLOCKED (too early or no shift) -->
+<div class="page" id="p-blocked">
+  <div class="hdr">
+    <div class="hdr-logo">☕ Puufu</div>
+    <div class="hdr-sub" id="d-block"></div>
+  </div>
+  <div class="content">
+    <div class="blockcard">
+      <div class="block-icon" id="block-icon">⏰</div>
+      <div class="block-title" id="block-title">Henüz erken</div>
+      <div class="block-shift" id="block-shift"></div>
+      <div class="block-sub" id="block-sub"></div>
+      <div class="block-msg" id="block-msg"></div>
+      <button class="backbtn" onclick="goBack()">← Geri dön</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: PIN + ACTION -->
 <div class="page" id="p-action">
   <div class="hdr">
     <div class="hdr-logo">☕ Puufu</div>
@@ -150,6 +180,9 @@ input{font-family:inherit}
         <div class="pwav" id="pa-av"></div>
         <div><div class="pwname" id="pa-name"></div><div class="pwrole" id="pa-role"></div></div>
       </div>
+      <!-- Shift info -->
+      <div class="shift-bar" id="pa-shift-bar"></div>
+      <!-- Clock status -->
       <div class="statusbar" id="pa-status"></div>
       <div class="action-label" id="action-label">Giriş Yap</div>
       <div class="pin-label">PIN Kodunuz</div>
@@ -160,7 +193,6 @@ input{font-family:inherit}
         <div class="pin-dot" id="pd3"></div>
       </div>
       <div class="pin-hint" id="pin-hint">Klavyeyi açmak için dokunun</div>
-      <!-- Hidden input - captures native number keyboard -->
       <input class="pin-real-input" id="pin-input"
         type="tel" inputmode="numeric" pattern="[0-9]*"
         maxlength="4" autocomplete="off" autocorrect="off">
@@ -170,7 +202,7 @@ input{font-family:inherit}
   </div>
 </div>
 
-<!-- PAGE 3: SUCCESS -->
+<!-- PAGE 4: SUCCESS -->
 <div class="page" id="p-success">
   <div class="hdr">
     <div class="hdr-logo">☕ Puufu</div>
@@ -182,58 +214,70 @@ input{font-family:inherit}
       <div class="sucname" id="sname"></div>
       <div class="sucmsg"  id="smsg"></div>
       <div class="suctime" id="stime"></div>
+      <div class="suc-shift-note" id="suc-note"></div>
       <button class="sucback" onclick="reset()">Tamam ✓</button>
     </div>
   </div>
 </div>
 
 <script>
+// ── CONFIG ────────────────────────────────────────────────────────────
+// How many minutes before shift start check-in is allowed
+const EARLY_BUFFER_MIN = 30;
+// How many minutes after shift end before overtime flag triggers
+const LATE_GRACE_MIN = 10;
+// How many minutes after shift end to auto-close forgotten checkouts
+const AUTO_CLOSE_MIN = 15;
+// Day names matching JS getDay() (0=Sun)
+const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+const COLORS = ['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22'];
+// ─────────────────────────────────────────────────────────────────────
+
 let db, fs;
 function waitDb(){return new Promise(r=>{if(window._db){db=window._db;fs=window._fs;r();}else window.addEventListener('db-ready',()=>{db=window._db;fs=window._fs;r();},{once:true});})}
 
-let allStaff=[], clockStates={}, sel=null;
-const COLORS=['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22'];
+let allStaff=[], clockStates={}, shiftsMap={}, schedulesMap={};
+let sel=null, selShift=null;
+let _pin='';
 
+// ── INIT ──────────────────────────────────────────────────────────────
 async function init(){
   setDates();
   await waitDb();
 
-  // Load staff
-  const snap=await fs.getDocs(fs.collection(db,'staff'));
+  const [sSnap, csSnap, shSnap, scSnap] = await Promise.all([
+    fs.getDocs(fs.collection(db,'staff')),
+    fs.getDocs(fs.collection(db,'clockStates')),
+    fs.getDocs(fs.collection(db,'shifts')),
+    fs.getDocs(fs.collection(db,'schedules'))
+  ]);
+
   allStaff=[];
-  snap.forEach(d=>allStaff.push({id:d.id,...d.data()}));
+  sSnap.forEach(d=>allStaff.push({id:d.id,...d.data()}));
 
-  // Seed defaults if empty
-  if(!allStaff.length){
-    const defs=[
-      {name:'Alex',role:'Süpervizör',password:'1111',color:COLORS[0]},
-      {name:'Maria',role:'Barista',password:'2222',color:COLORS[1]},
-      {name:'James',role:'Barista',password:'3333',color:COLORS[2]},
-      {name:'Sofia',role:'Kasiyer',password:'4444',color:COLORS[3]},
-      {name:'Leo',role:'Barista',password:'5555',color:COLORS[4]},
-      {name:'Nina',role:'Kasiyer',password:'6666',color:COLORS[5]},
-    ];
-    for(const s of defs){
-      const ref=await fs.addDoc(fs.collection(db,'staff'),s);
-      allStaff.push({id:ref.id,...s});
-    }
-  }
-
-  // Load clock states
-  const cs=await fs.getDocs(fs.collection(db,'clockStates'));
   clockStates={};
-  cs.forEach(d=>clockStates[d.id]=d.data());
+  csSnap.forEach(d=>clockStates[d.id]=d.data());
+
+  shiftsMap={};
+  shSnap.forEach(d=>shiftsMap[d.id]={id:d.id,...d.data()});
+
+  schedulesMap={};
+  scSnap.forEach(d=>schedulesMap[d.id]=d.data());
 
   renderGrid();
 }
 
+// ── RENDER STAFF GRID ─────────────────────────────────────────────────
 function renderGrid(){
   const g=document.getElementById('sgrid');
-  if(!allStaff.length){g.innerHTML='<div style="grid-column:span 2;text-align:center;color:var(--muted);padding:32px;font-size:.85rem">Personel bulunamadı.<br>Yöneticinizle iletişime geçin.</div>';return;}
+  if(!allStaff.length){
+    g.innerHTML='<div style="grid-column:span 2;text-align:center;color:var(--muted);padding:32px;font-size:.85rem">Personel bulunamadı.<br>Yöneticinizle iletişime geçin.</div>';
+    return;
+  }
   g.innerHTML=allStaff.map(s=>{
     const cs=clockStates[s.id];
     const on=!!(cs&&cs.in&&!cs.out);
-    return `<button class="sbtn${sel?.id===s.id?' sel':''}" onclick='selectStaff(${JSON.stringify(s)})'>
+    return `<button class="sbtn${sel?.id===s.id?' sel':''}" onclick='selectStaff(${JSON.stringify({id:s.id,name:s.name,role:s.role,password:s.password,color:s.color})})'>
       <div class="sav" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
       <div class="sname">${s.name}</div>
       <div class="srole">${s.role}</div>
@@ -242,27 +286,125 @@ function renderGrid(){
   }).join('');
 }
 
+// ── GET TODAY'S SHIFT FOR A STAFF MEMBER ─────────────────────────────
+function getTodayShift(staffId){
+  const todayKey = DAY_KEYS[new Date().getDay()];
+  const todayIso = iso(new Date());
+  const sched = schedulesMap[staffId];
+  if(!sched) return null;
+
+  // Check one-off overrides first
+  if(sched.overrides && sched.overrides[todayIso] !== undefined){
+    const ov = sched.overrides[todayIso];
+    if(!ov) return null; // explicitly OFF
+    return shiftsMap[ov] || null;
+  }
+
+  // Weekly template
+  const shiftId = sched.weeklyTemplate && sched.weeklyTemplate[todayKey];
+  if(!shiftId) return null;
+  return shiftsMap[shiftId] || null;
+}
+
+// ── PARSE shift time to today's timestamp ────────────────────────────
+function shiftTs(timeStr){
+  // timeStr = "09:30"
+  const [h,m]=timeStr.split(':').map(Number);
+  const d=new Date();
+  d.setHours(h,m,0,0);
+  return d.getTime();
+}
+
+// ── SELECT STAFF ──────────────────────────────────────────────────────
 function selectStaff(s){
   if(typeof s==='string')s=JSON.parse(s);
   sel=s;
-  localStorage.setItem('cafe_last',s.id);
+
   const cs=clockStates[s.id];
   const on=!!(cs&&cs.in&&!cs.out);
 
+  // If already clocked in, skip shift checks — allow checkout freely
+  if(on){
+    selShift=getTodayShift(s.id);
+    openPinPage(s, cs, on);
+    return;
+  }
+
+  // Check shift and timing for check-IN
+  const shift=getTodayShift(s.id);
+  selShift=shift;
+  const now=Date.now();
+
+  if(!shift){
+    // No shift assigned
+    showBlocked(
+      '📋',
+      'Vardiya Atanmamış',
+      '',
+      '',
+      'Bugün için programlanmış bir vardiya bulunamadı. Lütfen yöneticinizle iletişime geçin.'
+    );
+    return;
+  }
+
+  const shiftStart=shiftTs(shift.startTime);
+  const earlyLimit=shiftStart - EARLY_BUFFER_MIN*60000;
+
+  if(now < earlyLimit){
+    // Too early — block
+    const minsLeft=Math.ceil((earlyLimit-now)/60000);
+    showBlocked(
+      '⏰',
+      'Henüz Çok Erken',
+      `${shift.startTime} – ${shift.endTime}`,
+      `Bugünkü vardiya`,
+      `Giriş yapabilmek için daha ${minsLeft} dakika beklemeniz gerekiyor.\n\nGiriş penceresi saat ${toTime(earlyLimit)}'de açılacak.`
+    );
+    return;
+  }
+
+  openPinPage(s, cs, on);
+}
+
+function showBlocked(icon, title, shiftLabel, shiftSub, msg){
+  document.getElementById('block-icon').textContent=icon;
+  document.getElementById('block-title').textContent=title;
+  document.getElementById('block-shift').textContent=shiftLabel;
+  document.getElementById('block-sub').textContent=shiftSub;
+  document.getElementById('block-msg').textContent=msg;
+  showPage('p-blocked');
+}
+
+function openPinPage(s, cs, on){
+  const shift=selShift;
+
+  // Shift bar
+  const sb=document.getElementById('pa-shift-bar');
+  if(shift){
+    sb.className='shift-bar has-shift';
+    sb.innerHTML=`<strong>📅 Bugünkü Vardiya: ${shift.name}</strong>${shift.startTime} – ${shift.endTime}`;
+  } else {
+    sb.className='shift-bar no-shift';
+    sb.innerHTML='⚠️ Bugün için vardiya atanmamış';
+  }
+
+  // Avatar & name
   document.getElementById('pa-av').style.background=s.color||COLORS[0];
   document.getElementById('pa-av').textContent=s.name.slice(0,2).toUpperCase();
   document.getElementById('pa-name').textContent=s.name;
   document.getElementById('pa-role').textContent=s.role;
 
-  const sb=document.getElementById('pa-status');
-  sb.className=`statusbar ${on?'in':'out'}`;
-  sb.innerHTML=on?`✅ Görevde, giriş saati: <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Şu an görevde değil';
+  // Status bar
+  const statusBar=document.getElementById('pa-status');
+  statusBar.className=`statusbar ${on?'in':'out'}`;
+  statusBar.innerHTML=on?`✅ Görevde · Giriş: <b style="margin-left:4px">${ft(cs.in)}</b>`:'○ Şu an görevde değil';
 
+  // Action label
   const al=document.getElementById('action-label');
   al.textContent=on?'Çıkış Yap':'Giriş Yap';
   al.className=`action-label ${on?'co':'ci'}`;
 
-  // Reset PIN state
+  // Reset PIN
   _pin='';
   const inp=document.getElementById('pin-input');
   inp.value='';
@@ -275,14 +417,12 @@ function selectStaff(s){
   setTimeout(focusPinInput, 350);
 }
 
-let _pin='';
-
+// ── PIN INPUT ─────────────────────────────────────────────────────────
 function focusPinInput(){
   const inp=document.getElementById('pin-input');
-  inp.value=_pin; // keep existing digits
+  inp.value=_pin;
   inp.focus();
-  // Move cursor to end
-  inp.setSelectionRange(inp.value.length, inp.value.length);
+  inp.setSelectionRange(inp.value.length,inp.value.length);
   document.getElementById('pin-hint').textContent='PIN giriliyor…';
   document.getElementById('pin-hint').classList.add('active');
 }
@@ -313,6 +453,7 @@ function updDots(){
     el.classList.remove('error');
   }
 }
+
 function shakeErr(msg){
   document.getElementById('pwerr').textContent=msg;
   for(let i=0;i<4;i++) document.getElementById('pd'+i).classList.add('error');
@@ -326,68 +467,167 @@ function shakeErr(msg){
   },800);
 }
 
+// ── SUBMIT CHECK-IN / CHECK-OUT ───────────────────────────────────────
 async function submitAction(){
-  const err=document.getElementById('pwerr');
   if(_pin!==sel.password){ shakeErr('Yanlış PIN — tekrar deneyin'); return; }
 
-  // Blur keyboard, show saving
   document.getElementById('pin-input').blur();
   document.getElementById('pin-hint').textContent='Kaydediliyor…';
-  err.textContent='';
+  document.getElementById('pwerr').textContent='';
 
   const cs=clockStates[sel.id];
   const on=!!(cs&&cs.in&&!cs.out);
   const now=Date.now();
+  const shift=selShift;
 
   try{
     if(!on){
-      const ref=await fs.addDoc(fs.collection(db,'sessions'),{staffId:sel.id,in:now,out:null});
+      // ── CHECK-IN ──
+      const shiftStart = shift ? shiftTs(shift.startTime) : null;
+      // Paid time starts at shift start (not actual check-in if early)
+      const paidStart = (shiftStart && now < shiftStart) ? shiftStart : now;
+      const isEarly = shiftStart && now < shiftStart;
+
+      const sessionData = {
+        staffId: sel.id,
+        in: now,
+        out: null,
+        paidStart: paidStart,
+        paidEnd: null,
+        shiftId: shift ? (shift.id||null) : null,
+        shiftStart: shiftStart,
+        shiftEnd: shift ? shiftTs(shift.endTime) : null,
+        status: 'active',  // active | normal | auto-closed | overtime-pending | early-departure
+        isEarlyCheckin: isEarly,
+        autoCloseApplied: false,
+        overtimeApproved: null
+      };
+
+      const ref=await fs.addDoc(fs.collection(db,'sessions'), sessionData);
       await fs.setDoc(fs.doc(db,'clockStates',sel.id),{in:now,out:null,sid:ref.id});
       clockStates[sel.id]={in:now,out:null,sid:ref.id};
-      showSuccess('in',sel,now);
+
+      // Build note for success screen
+      let noteText='', noteClass='';
+      if(isEarly && shift){
+        noteText=`Erken giriş yapıldı. Ücretli süreniz saat ${shift.startTime}'de başlayacak.`;
+        noteClass='warn';
+      } else if(shift){
+        noteText=`Vardiya: ${shift.startTime} – ${shift.endTime}. İyi çalışmalar!`;
+        noteClass='ok';
+      }
+      showSuccess('in', sel, now, noteText, noteClass);
+
     } else {
-      if(cs.sid)await fs.updateDoc(fs.doc(db,'sessions',cs.sid),{out:now});
-      else await fs.addDoc(fs.collection(db,'sessions'),{staffId:sel.id,in:cs.in,out:now});
+      // ── CHECK-OUT ──
+      const shiftEnd = shift ? shiftTs(shift.endTime) : null;
+      const lateLimit = shiftEnd ? shiftEnd + LATE_GRACE_MIN*60000 : null;
+      const isLate = lateLimit && now > lateLimit;
+      const isEarlyDep = shiftEnd && now < shiftEnd - 5*60000; // >5 min before shift end
+
+      // Paid end: if within grace → shift end, if late → flag for owner, if early → actual out
+      let paidEnd, status;
+      if(isLate){
+        paidEnd = shiftEnd; // freeze at shift end; OT pending approval
+        status = 'overtime-pending';
+      } else if(isEarlyDep && shift){
+        paidEnd = now;
+        status = 'early-departure';
+      } else if(shiftEnd && now <= lateLimit){
+        paidEnd = shiftEnd; // round up to shift end within grace
+        status = 'normal';
+      } else {
+        paidEnd = now;
+        status = 'normal';
+      }
+
+      // Update session
+      const updateData = {
+        out: now,
+        paidEnd: paidEnd,
+        status: status,
+        overtimeMs: isLate ? (now - shiftEnd) : 0
+      };
+
+      if(cs.sid) await fs.updateDoc(fs.doc(db,'sessions',cs.sid), updateData);
       await fs.setDoc(fs.doc(db,'clockStates',sel.id),{in:cs.in,out:now,sid:cs.sid||null});
       clockStates[sel.id]={in:cs.in,out:now};
-      showSuccess('out',sel,now);
+
+      // Flag record for owner if needed
+      if(isLate || isEarlyDep){
+        await fs.addDoc(fs.collection(db,'flags'),{
+          sessionId: cs.sid||null,
+          staffId: sel.id,
+          staffName: sel.name,
+          type: isLate ? 'overtime-pending' : 'early-departure',
+          createdAt: now,
+          resolved: false,
+          approved: null,
+          note: isLate
+            ? `${sel.name} vardiya bitiminden ${Math.round((now-shiftEnd)/60000)} dk sonra çıkış yaptı.`
+            : `${sel.name} vardiya bitiminden önce çıkış yaptı.`
+        });
+      }
+
+      let noteText='', noteClass='';
+      if(isLate){
+        const otMin=Math.round((now-shiftEnd)/60000);
+        noteText=`Mesai saatiniz ${otMin} dk fazla. Bu süre yönetici onayına sunulacak.`;
+        noteClass='warn';
+      } else if(isEarlyDep){
+        noteText='Erken çıkış kaydedildi. Yönetici bilgilendirilecek.';
+        noteClass='warn';
+      } else {
+        const paidMs = paidEnd - (cs.in < (shift?shiftTs(shift.startTime):cs.in) ? (shift?shiftTs(shift.startTime):cs.in) : cs.in);
+        noteText=`Bugün ücretli süreniz: ${fh(paidEnd - Math.max(cs.in, shift?shiftTs(shift.startTime):cs.in))}`;
+        noteClass='ok';
+      }
+      showSuccess('out', sel, now, noteText, noteClass);
     }
   }catch(e){
+    console.error(e);
     document.getElementById('pin-hint').textContent='Klavyeyi açmak için dokunun';
     shakeErr('Bağlantı hatası — tekrar deneyin');
   }
 }
 
-function showSuccess(type,staff,ts){
+// ── SUCCESS SCREEN ────────────────────────────────────────────────────
+function showSuccess(type, staff, ts, noteText, noteClass){
   document.getElementById('sico').textContent=type==='in'?'☕':'👋';
   document.getElementById('sico').className=`sucicon ${type}`;
   document.getElementById('sname').textContent=staff.name;
   document.getElementById('smsg').textContent=type==='in'?'Giriş yapıldı':'Çıkış yapıldı';
   document.getElementById('stime').textContent=ft(ts);
+  const noteEl=document.getElementById('suc-note');
+  if(noteText){noteEl.textContent=noteText;noteEl.className=`suc-shift-note ${noteClass}`;noteEl.style.display='block';}
+  else{noteEl.style.display='none';}
   showPage('p-success');
-  setTimeout(reset,4000);
+  setTimeout(reset, 5000);
 }
 
+// ── NAV ───────────────────────────────────────────────────────────────
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function goBack(){showPage('p-select');renderGrid();}
-function reset(){sel=null;_pin='';document.getElementById('pin-input').value='';showPage('p-select');renderGrid();}
+function goBack(){sel=null;selShift=null;_pin='';document.getElementById('pin-input').value='';showPage('p-select');renderGrid();}
+function reset(){sel=null;selShift=null;_pin='';document.getElementById('pin-input').value='';showPage('p-select');renderGrid();}
+
+// ── UTILS ─────────────────────────────────────────────────────────────
 function ft(ts){return new Date(ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+function toTime(ts){return new Date(ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
+function iso(d){return new Date(d).toISOString().slice(0,10);}
 function fh(ms){if(!ms||ms<=0)return'–';const t=Math.round(ms/60000);const h=Math.floor(t/60),m=t%60;return h>0?`${h}s ${m}d`:`${m}d`;}
-function setDates(){const d=new Date().toLocaleDateString('tr-TR',{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
+function setDates(){const d=new Date().toLocaleDateString('tr-TR',{weekday:'long',month:'long',day:'numeric'});['d1','d2','d3','d-block'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=d;});}
 
 initPinInput();
 
-// Register PWA service worker
+// Service Worker
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/cafetime/sw-staff.js', { scope: '/cafetime/' });
-  navigator.serviceWorker.addEventListener('controllerchange', () => location.reload());
+  navigator.serviceWorker.register('/cafetime/sw-staff.js',{scope:'/cafetime/'});
+  navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
 
-// Refresh staff list when app comes back to foreground
-document.addEventListener('visibilitychange', () => {
-  if(document.visibilityState === 'visible' && document.getElementById('p-select').classList.contains('active')){
-    init();
-  }
+// Refresh on foreground
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&document.getElementById('p-select').classList.contains('active')) init();
 });
 
 init().catch(()=>{
