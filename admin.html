@@ -41,8 +41,6 @@ html{-webkit-tap-highlight-color:transparent}
 body{font-family:'Instrument Sans',sans-serif;background:var(--off);color:var(--text);min-height:100dvh}
 button{font-family:inherit;cursor:pointer;border:none;background:none}
 input,select,textarea{font-family:inherit}
-
-/* LOCK */
 #lockscreen{position:fixed;inset:0;z-index:1000;background:var(--red);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity .3s,visibility .3s}
 #lockscreen.gone{opacity:0;visibility:hidden;pointer-events:none}
 .llogo{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:4px}
@@ -55,58 +53,38 @@ input,select,textarea{font-family:inherit}
 .lbtn{width:100%;max-width:300px;padding:14px;border-radius:14px;background:#fff;color:var(--red);font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;transition:opacity .15s;margin-bottom:10px}
 .lbtn:active{opacity:.85}
 .lerr{font-size:.8rem;color:rgba(255,255,255,.85);font-weight:600;min-height:20px;text-align:center}
-
-/* APP */
 #app{display:none}
 #app.visible{display:block}
-
-/* HEADER */
 .hdr{background:var(--red);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(218,39,77,.2)}
 .hlogo{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:#fff;letter-spacing:-.3px}
 .hright{display:flex;align-items:center;gap:10px}
 .hclock{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;color:rgba(255,255,255,.75)}
 .hlogout{padding:6px 14px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;font-size:.75rem;font-weight:700}
-
-/* TABS */
 .tabbar{background:#fff;border-bottom:1px solid var(--line);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:57px;z-index:40}
 .tabbar::-webkit-scrollbar{display:none}
-.tbtn{padding:13px 16px;font-size:.8rem;font-weight:700;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0;position:relative}
+.tbtn{padding:13px 16px;font-size:.8rem;font-weight:700;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;flex-shrink:0}
 .tbtn.active{color:var(--red);border-bottom-color:var(--red)}
-.tab-badge{position:absolute;top:8px;right:6px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:8px;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 4px}
-
-/* MAIN */
 main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .sec{display:none}
 .sec.active{display:block;animation:fi .2s ease}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-
-/* CARDS */
 .card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
 .card-hdr{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;letter-spacing:.3px}
 .card-body{padding:14px 16px}
-
-/* FLAGS */
 .flag-list{display:flex;flex-direction:column;gap:8px}
 .flag-item{border-radius:12px;padding:12px 14px;border:1.5px solid var(--line)}
-.flag-item.overtime{border-color:rgba(217,119,6,.3);background:var(--amber-s)}
 .flag-item.auto-closed{border-color:rgba(37,99,235,.25);background:var(--blue-s)}
-.flag-item.early-departure{border-color:rgba(15,157,88,.25);background:var(--green-s)}
+.flag-item.early-departure{border-color:rgba(217,119,6,.25);background:var(--amber-s)}
 .fi-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
 .fi-name{font-weight:700;font-size:.88rem}
 .fi-note{font-size:.76rem;color:var(--muted);line-height:1.4;margin-bottom:8px}
 .fi-badge{font-size:.65rem;font-weight:800;padding:3px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0}
-.fi-badge.overtime{background:rgba(217,119,6,.15);color:var(--amber)}
 .fi-badge.auto-closed{background:rgba(37,99,235,.12);color:var(--blue)}
-.fi-badge.early-departure{background:rgba(15,157,88,.12);color:var(--green)}
+.fi-badge.early-departure{background:rgba(217,119,6,.12);color:var(--amber)}
 .fi-actions{display:flex;gap:6px}
-.fi-btn{padding:7px 14px;border-radius:9px;font-size:.75rem;font-weight:700;border:1.5px solid transparent;transition:opacity .15s}
+.fi-btn{padding:7px 14px;border-radius:9px;font-size:.75rem;font-weight:700;border:1.5px solid var(--line);background:var(--off);color:var(--muted);transition:opacity .15s}
 .fi-btn:active{opacity:.7}
-.fi-approve{background:var(--green-s);color:var(--green);border-color:rgba(15,157,88,.2)}
-.fi-reject{background:var(--red-s);color:var(--red);border-color:rgba(218,39,77,.2)}
-.fi-dismiss{background:var(--off);color:var(--muted);border-color:var(--line)}
-
-/* LIVE GRID */
 .live-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 @media(min-width:480px){.live-grid{grid-template-columns:repeat(3,1fr)}}
 .live-card{border-radius:12px;padding:14px 12px;display:flex;flex-direction:column;gap:6px;border:1.5px solid var(--line)}
@@ -118,14 +96,10 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .lc-status.on{color:var(--green)}
 .lc-status.off{color:var(--muted)}
 .lc-time{font-size:.7rem;color:var(--muted)}
-
-/* SUMMARY PILLS */
 .sum-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px}
 .sum-pill{flex:1;min-width:80px;background:var(--red-s);border-radius:12px;padding:12px 14px;text-align:center}
 .sum-val{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--red);line-height:1}
 .sum-lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:3px}
-
-/* REPORTS */
 .rtabs{display:flex;gap:6px;margin-bottom:14px;background:#fff;border-radius:var(--r);padding:5px;box-shadow:var(--sh)}
 .rtab{flex:1;padding:9px 4px;border-radius:10px;font-size:.8rem;font-weight:700;color:var(--muted);transition:all .15s;text-align:center}
 .rtab.active{background:var(--red);color:#fff}
@@ -134,8 +108,6 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .xbtn{padding:9px 14px;border-radius:11px;background:var(--red);color:#fff;font-size:.78rem;font-weight:700;white-space:nowrap}
 .xbtn:active{opacity:.8}
 .xbtn.dark{background:var(--text)}
-
-/* WEEKLY TABLE */
 .twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r);box-shadow:var(--sh)}
 .wtbl{width:100%;border-collapse:separate;border-spacing:0;background:#fff;min-width:460px;font-size:.76rem}
 .wtbl th{background:var(--red);color:#fff;padding:9px 7px;text-align:center;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700}
@@ -145,22 +117,16 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .wtbl tr:last-child td{border-bottom:none}
 .wtbl tr:hover td{background:var(--red-s)}
 .wtot{font-family:'Syne',sans-serif;font-weight:800;color:var(--red)}
-.wot{color:var(--amber);font-weight:700}
 .wz{color:#ddd}
-
-/* MONTHLY CARDS */
 .mcards{display:flex;flex-direction:column;gap:10px}
 .mcard{background:#fff;border-radius:var(--r);padding:14px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .mav{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;color:#fff;flex-shrink:0}
 .minfo{flex:1;min-width:0}
 .mname{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:7px}
-.mstats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.mstats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
 .mstat{text-align:center}
 .mval{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--red);line-height:1}
-.mval.ot{color:var(--amber)}
 .mlbl{font-size:.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:2px}
-
-/* TODAY LOG */
 .lhdr{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;padding:9px 14px;background:var(--red-s);font-size:.7rem;font-weight:700;color:var(--red);letter-spacing:.4px;text-transform:uppercase}
 .lrow{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.8rem}
 .lrow:last-child{border-bottom:none}
@@ -170,15 +136,9 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .ldur{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--red);text-align:right;min-width:36px}
 .edit-icon{font-size:.85rem;cursor:pointer;opacity:.4;transition:opacity .15s;padding:2px 6px;border-radius:6px}
 .edit-icon:hover{opacity:1;background:var(--red-s)}
-
-/* STATUS CHIP */
 .schip{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:6px;vertical-align:middle;margin-left:4px}
 .schip.auto-closed{background:var(--blue-s);color:var(--blue)}
-.schip.overtime-pending{background:var(--amber-s);color:var(--amber)}
-.schip.early-departure{background:var(--green-s);color:var(--green)}
-.schip.normal{display:none}
-
-/* ── STAFF MANAGEMENT ── */
+.schip.early-departure{background:var(--amber-s);color:var(--amber)}
 .staff-list-admin{display:flex;flex-direction:column;gap:10px}
 .staff-item{background:#fff;border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
 .sia-av{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:#fff;flex-shrink:0}
@@ -186,25 +146,17 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .sia-name{font-weight:600;font-size:.92rem}
 .sia-role{font-size:.72rem;color:var(--muted)}
 .sia-actions{display:flex;gap:6px}
-.sia-btn{padding:7px 12px;border-radius:9px;font-size:.75rem;font-weight:700;transition:opacity .15s}
+.sia-btn{padding:7px 12px;border-radius:9px;font-size:.75rem;font-weight:700;transition:opacity .15s;background:var(--off);color:var(--text);border:1.5px solid var(--line)}
 .sia-btn:active{opacity:.7}
-.sia-edit{background:var(--off);color:var(--text);border:1.5px solid var(--line)}
-.sia-sched{background:var(--blue-s);color:var(--blue);border:1.5px solid rgba(37,99,235,.2)}
-
 .add-staff-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border-radius:var(--r);border:2px dashed var(--line);color:var(--muted);font-size:.88rem;font-weight:600;transition:border-color .15s,color .15s;margin-top:4px}
 .add-staff-btn:hover{border-color:var(--red);color:var(--red)}
-
-/* ── SHIFTS TAB ── */
 .shift-tmpl-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .shift-tmpl{background:#fff;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh)}
-.st-color{width:12px;height:12px;border-radius:4px;flex-shrink:0}
+.st-dot{width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0}
 .st-info{flex:1}
 .st-name{font-weight:600;font-size:.9rem}
 .st-time{font-size:.75rem;color:var(--muted)}
-.st-actions{display:flex;gap:6px}
 .st-btn{padding:6px 12px;border-radius:8px;font-size:.73rem;font-weight:700;background:var(--off);color:var(--text);border:1.5px solid var(--line)}
-
-/* Weekly schedule grid */
 .week-sched{background:#fff;border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
 .ws-hdr{display:grid;grid-template-columns:80px repeat(7,1fr);border-bottom:1px solid var(--line);background:var(--off)}
 .ws-hdr-cell{padding:8px 4px;font-size:.65rem;font-weight:700;color:var(--muted);text-align:center;text-transform:uppercase}
@@ -217,8 +169,6 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .ws-select:focus{outline:none;border-color:var(--red)}
 .ws-select.has-shift{background:var(--red-s);border-color:rgba(218,39,77,.2);color:var(--red);font-weight:700}
 .ws-select.off{background:var(--off);color:var(--muted)}
-
-/* ── MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:flex-end;justify-content:center;backdrop-filter:blur(2px)}
 .modal-overlay.open{display:flex}
 .modal-sheet{background:#fff;border-radius:22px 22px 0 0;padding:22px 20px 36px;width:100%;max-width:500px;animation:su .25s ease;max-height:92dvh;overflow-y:auto}
@@ -239,25 +189,18 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 .mbtn.save{background:var(--red);color:#fff}
 .mbtn.cancel{background:var(--off);color:var(--muted)}
 .mbtn.danger{background:rgba(218,39,77,.1);color:var(--red)}
-
-/* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--text);color:#fff;padding:11px 22px;border-radius:28px;font-size:.82rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* SPINNER */
 .sp{display:inline-block;width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .sw{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem;padding:20px}
 .empty{text-align:center;padding:28px 16px;color:var(--muted);font-size:.85rem}
 .eico{font-size:1.8rem;margin-bottom:6px}
-
-/* Section divider */
 .sdiv{font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin:16px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
 </style>
 </head>
 <body>
 
-<!-- LOCK SCREEN -->
 <div id="lockscreen">
   <div class="llogo">☕ Puufu Admin</div>
   <div class="lsub">Yönetici girişi</div>
@@ -269,7 +212,6 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
   <div class="lerr" id="lerr"></div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <header class="hdr">
     <div class="hlogo">☕ Puufu Admin</div>
@@ -278,31 +220,23 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
       <button class="hlogout" onclick="logout()">Kilitle</button>
     </div>
   </header>
-
   <div class="tabbar">
     <button class="tbtn active" onclick="showTab('dashboard',this)">Genel</button>
-    <button class="tbtn" onclick="showTab('reports',this)" id="tab-btn-reports">Raporlar</button>
+    <button class="tbtn" onclick="showTab('reports',this)">Raporlar</button>
     <button class="tbtn" onclick="showTab('shifts',this)">Vardiyalar</button>
     <button class="tbtn" onclick="showTab('staff',this)">Personel</button>
     <button class="tbtn" onclick="showTab('log',this)">Kayıt Düzenle</button>
   </div>
-
   <main>
 
-    <!-- DASHBOARD -->
     <div class="sec active" id="tab-dashboard">
-
-      <!-- FLAGS PANEL -->
       <div class="card" id="flags-card" style="display:none">
-        <div class="card-hdr" style="background:var(--amber-s)">
-          <div class="card-title" style="color:var(--amber)">⚠️ ONAY BEKLİYOR</div>
-          <div id="flags-count" style="font-size:.75rem;color:var(--amber);font-weight:700"></div>
+        <div class="card-hdr" style="background:var(--blue-s)">
+          <div class="card-title" style="color:var(--blue)">📋 BİLDİRİMLER</div>
+          <div id="flags-count" style="font-size:.75rem;color:var(--blue);font-weight:700"></div>
         </div>
-        <div class="card-body">
-          <div class="flag-list" id="flag-list"></div>
-        </div>
+        <div class="card-body"><div class="flag-list" id="flag-list"></div></div>
       </div>
-
       <div class="card">
         <div class="card-hdr">
           <div class="card-title">CANLI DURUM</div>
@@ -312,25 +246,20 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
           <div class="live-grid" id="live-grid"><div class="sw"><div class="sp"></div>Yükleniyor…</div></div>
         </div>
       </div>
-
       <div class="card">
         <div class="card-hdr"><div class="card-title">BUGÜNÜN ÖZETİ</div></div>
-        <div class="card-body">
-          <div class="sum-row" id="today-sum"></div>
-        </div>
+        <div class="card-body"><div class="sum-row" id="today-sum"></div></div>
       </div>
-
       <div class="card">
         <div class="card-hdr"><div class="card-title">BUGÜNÜN GİRİŞLERİ</div></div>
         <div id="today-log"></div>
       </div>
     </div>
 
-    <!-- REPORTS -->
     <div class="sec" id="tab-reports">
       <div class="rtabs">
         <button class="rtab active" id="rt-today" onclick="swr('today')">Bugün</button>
-        <button class="rtab" id="rt-week"  onclick="swr('week')">Haftalık</button>
+        <button class="rtab" id="rt-week" onclick="swr('week')">Haftalık</button>
         <button class="rtab" id="rt-month" onclick="swr('month')">Aylık</button>
       </div>
       <div class="rctrl">
@@ -341,35 +270,24 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
       <div id="rbody"><div class="sw"><div class="sp"></div></div></div>
     </div>
 
-    <!-- SHIFTS & SCHEDULING -->
     <div class="sec" id="tab-shifts">
-
       <div class="sdiv">Vardiya Şablonları</div>
-      <div class="shift-tmpl-list" id="shift-tmpl-list">
-        <div class="sw"><div class="sp"></div>Yükleniyor…</div>
-      </div>
+      <div class="shift-tmpl-list" id="shift-tmpl-list"><div class="sw"><div class="sp"></div>Yükleniyor…</div></div>
       <button class="add-staff-btn" onclick="openAddShift()">＋ Yeni vardiya şablonu ekle</button>
-
       <div class="sdiv" style="margin-top:20px">Haftalık Program</div>
       <div class="card" style="overflow:visible">
         <div class="card-body" style="padding:0">
-          <div id="week-schedule-wrap">
-            <div class="sw"><div class="sp"></div>Yükleniyor…</div>
-          </div>
+          <div id="week-schedule-wrap"><div class="sw"><div class="sp"></div>Yükleniyor…</div></div>
         </div>
       </div>
       <button class="xbtn" style="width:100%;margin-top:4px;padding:13px;border-radius:12px;font-size:.9rem" onclick="saveAllSchedules()">💾 Haftalık Programı Kaydet</button>
     </div>
 
-    <!-- STAFF MANAGEMENT -->
     <div class="sec" id="tab-staff">
-      <div class="staff-list-admin" id="staff-admin-list">
-        <div class="sw"><div class="sp"></div>Yükleniyor…</div>
-      </div>
+      <div class="staff-list-admin" id="staff-admin-list"><div class="sw"><div class="sp"></div>Yükleniyor…</div></div>
       <button class="add-staff-btn" onclick="openAddStaff()">＋ Yeni personel ekle</button>
     </div>
 
-    <!-- EDIT RECORDS -->
     <div class="sec" id="tab-log">
       <div class="rctrl">
         <input type="date" id="log-date">
@@ -394,11 +312,6 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
       <input id="sh-buffer" type="number" value="30" min="0" max="60">
       <div class="hint">Bu süreden daha erken giriş yapılamaz</div>
     </div>
-    <div class="mfield">
-      <label>Mesai Toleransı (dakika)</label>
-      <input id="sh-grace" type="number" value="10" min="0" max="60">
-      <div class="hint">Bu süreden sonraki çıkışlar mesai olarak işaretlenir</div>
-    </div>
     <div class="mbtn-row">
       <button class="mbtn cancel" onclick="closeModal('shift-modal')">İptal</button>
       <button class="mbtn danger" id="shm-del" style="display:none" onclick="deleteShift()">Sil</button>
@@ -421,10 +334,7 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
       <input id="sf-pw" type="text" placeholder="örn. 1234" maxlength="4" inputmode="numeric" pattern="[0-9]*">
       <div class="hint">Personel giriş/çıkış için bu PIN'i kullanır</div>
     </div>
-    <div class="mfield">
-      <label>Renk</label>
-      <div class="color-grid" id="color-grid"></div>
-    </div>
+    <div class="mfield"><label>Renk</label><div class="color-grid" id="color-grid"></div></div>
     <div class="mbtn-row">
       <button class="mbtn cancel" onclick="closeModal('staff-modal')">İptal</button>
       <button class="mbtn danger" id="sm-del" style="display:none" onclick="deleteStaff()">Sil</button>
@@ -448,7 +358,6 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
       <select id="es-status">
         <option value="normal">Normal</option>
         <option value="auto-closed">Otomatik Kapatıldı</option>
-        <option value="overtime-pending">Mesai Onay Bekliyor</option>
         <option value="early-departure">Erken Çıkış</option>
       </select>
     </div>
@@ -463,15 +372,11 @@ main{padding:18px 16px 40px;max-width:700px;margin:0 auto}
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════
-// CONFIG
+// ── CONFIG ────────────────────────────────────────────────
 const ADMIN_PASSWORD = 'ShamiL2020';
-const OT_HOURS = 8;
-const AUTO_CLOSE_MIN = 15; // minutes after shift end to auto-close
+const AUTO_CLOSE_MIN = 15;
 const COLORS = ['#c0392b','#8e44ad','#2980b9','#16a085','#d35400','#7f8c8d','#27ae60','#e67e22','#c0762b','#2c3e50'];
 const DAY_KEYS = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-const DAY_LABELS = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
-// ══════════════════════════════════════════
 
 let db, fs;
 function waitDb(){return new Promise(r=>{if(window._db){db=window._db;fs=window._fs;r();}else window.addEventListener('db-ready',()=>{db=window._db;fs=window._fs;r();},{once:true});})}
@@ -481,26 +386,23 @@ let _rm='today', _ls=[];
 let _editStaffId=null, _selColor=COLORS[0];
 let _editSessionId=null, _editShiftId=null;
 
-// ── Service Worker ─────────────────────────────────────────
+// ── SERVICE WORKER ────────────────────────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/cafetime/sw.js',{scope:'/cafetime/'});
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
 
-// ── Visibility refresh ────────────────────────────────────
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='visible'){
     loadAll().then(()=>{
       const active=document.querySelector('.sec.active');
       if(!active)return;
-      const id=active.id;
-      if(id==='tab-dashboard')renderDashboard();
-      else if(id==='tab-reports')renderReport();
+      if(active.id==='tab-dashboard')renderDashboard();
+      else if(active.id==='tab-reports')renderReport();
     });
   }
 });
 
-// ── Pull-to-refresh ───────────────────────────────────────
 let _pty=0;
 document.addEventListener('touchstart',e=>{_pty=e.touches[0].clientY;},{passive:true});
 document.addEventListener('touchend',e=>{
@@ -510,14 +412,13 @@ document.addEventListener('touchend',e=>{
     loadAll().then(()=>{
       const active=document.querySelector('.sec.active');
       if(!active)return;
-      const id=active.id;
-      if(id==='tab-dashboard')renderDashboard();
-      else if(id==='tab-reports')renderReport();
+      if(active.id==='tab-dashboard')renderDashboard();
+      else if(active.id==='tab-reports')renderReport();
     });
   }
 },{passive:true});
 
-// ── LOCK ──────────────────────────────────────────────────
+// ── LOCK ─────────────────────────────────────────────────
 function tryUnlock(){
   const pw=document.getElementById('lpw').value;
   if(pw===ADMIN_PASSWORD){
@@ -535,7 +436,6 @@ function logout(){localStorage.removeItem('cafe_admin_unlock');location.reload()
 function toggleLockEye(){const f=document.getElementById('lpw');f.type=f.type==='password'?'text':'password';}
 document.getElementById('lpw').addEventListener('keydown',e=>{if(e.key==='Enter')tryUnlock();});
 
-// Auto-unlock
 const saved=localStorage.getItem('cafe_admin_unlock');
 if(saved&&Date.now()<+saved){
   document.getElementById('lockscreen').classList.add('gone');
@@ -546,14 +446,14 @@ if(saved&&Date.now()<+saved){
 // ── INIT ─────────────────────────────────────────────────
 async function initApp(){
   updateClock();setInterval(updateClock,10000);
-  document.getElementById('rdate').value=iso(new Date());
-  document.getElementById('log-date').value=iso(new Date());
+  document.getElementById('rdate').value=isoLocal(new Date());
+  document.getElementById('log-date').value=isoLocal(new Date());
   buildColorGrid();
   await loadAll();
-  await runAutoClose(); // check for forgotten checkouts
+  await runAutoClose();
   renderDashboard();
   setInterval(()=>{
-    if(document.getElementById('tab-dashboard').classList.contains('active')) renderDashboard();
+    if(document.getElementById('tab-dashboard').classList.contains('active'))renderDashboard();
   },60000);
 }
 
@@ -570,80 +470,65 @@ async function loadAll(){
   clockStates={};csSnap.forEach(d=>clockStates[d.id]=d.data());
   allShifts=[];shSnap.forEach(d=>allShifts.push({id:d.id,...d.data()}));
   schedulesMap={};scSnap.forEach(d=>schedulesMap[d.id]=d.data());
-  openFlags=[];flSnap.forEach(d=>openFlags.push({id:d.id,...d.data()}));
+  // Only auto-closed and early-departure — no overtime flags
+  openFlags=[];
+  flSnap.forEach(d=>{
+    const f={id:d.id,...d.data()};
+    if(f.type==='auto-closed'||f.type==='early-departure') openFlags.push(f);
+  });
   updateFlagBadge();
 }
 
-// ── AUTO-CLOSE FORGOTTEN CHECKOUTS ────────────────────────
+// ── AUTO-CLOSE ────────────────────────────────────────────
 async function runAutoClose(){
   const now=Date.now();
   const todayKey=DAY_KEYS[new Date().getDay()];
-  const todayIso=iso(new Date());
-
+  const todayIso=isoLocal(new Date());
   for(const staff of allStaff){
     const cs=clockStates[staff.id];
-    if(!cs||!cs.in||cs.out) continue; // not clocked in, skip
-
-    // Get their shift
+    if(!cs||!cs.in||cs.out)continue;
     const sched=schedulesMap[staff.id];
-    if(!sched) continue;
-    let shiftId = sched.overrides?.[todayIso] !== undefined
-      ? sched.overrides[todayIso]
-      : (sched.weeklyTemplate?.[todayKey]);
-    if(!shiftId) continue;
+    if(!sched)continue;
+    let shiftId=sched.overrides?.[todayIso]!==undefined?sched.overrides[todayIso]:(sched.weeklyTemplate?.[todayKey]);
+    if(!shiftId)continue;
     const shift=allShifts.find(s=>s.id===shiftId);
-    if(!shift) continue;
-
+    if(!shift)continue;
     const shiftEnd=shiftTs(shift.endTime);
-    const autoCloseTime=shiftEnd + AUTO_CLOSE_MIN*60000;
-
-    if(now >= autoCloseTime){
-      // Auto-close this session
+    if(now>=shiftEnd+AUTO_CLOSE_MIN*60000){
       try{
         if(cs.sid){
           await fs.updateDoc(fs.doc(db,'sessions',cs.sid),{
-            out:shiftEnd,
-            paidEnd:shiftEnd,
-            status:'auto-closed',
-            autoCloseApplied:true
+            out:shiftEnd,paidStart:cs.in,paidEnd:shiftEnd,
+            status:'auto-closed',autoCloseApplied:true
           });
         }
-        await fs.setDoc(fs.doc(db,'clockStates',staff.id),{
-          in:cs.in,out:shiftEnd,sid:cs.sid||null
-        });
+        await fs.setDoc(fs.doc(db,'clockStates',staff.id),{in:cs.in,out:shiftEnd,sid:cs.sid||null});
         clockStates[staff.id]={in:cs.in,out:shiftEnd};
-
-        // Add flag for owner awareness
-        await fs.addDoc(fs.collection(db,'flags'),{
-          sessionId:cs.sid||null,
-          staffId:staff.id,
-          staffName:staff.name,
-          type:'auto-closed',
-          createdAt:now,
-          resolved:false,
-          approved:null,
-          note:`${staff.name} çıkış yapmayı unuttu. Vardiya bitimine (${shift.endTime}) göre otomatik kapatıldı.`
-        });
-        toast(`${staff.name} otomatik çıkış yapıldı`);
-      }catch(e){console.error('Auto-close error',e);}
+        // Avoid duplicate flags
+        const already=openFlags.some(f=>f.staffId===staff.id&&f.type==='auto-closed');
+        if(!already){
+          await fs.addDoc(fs.collection(db,'flags'),{
+            sessionId:cs.sid||null,staffId:staff.id,staffName:staff.name,
+            type:'auto-closed',createdAt:now,resolved:false,
+            note:`${staff.name} çıkış yapmayı unuttu. Vardiya bitimine (${shift.endTime}) göre otomatik kapatıldı.`
+          });
+        }
+      }catch(e){console.error('auto-close',e);}
     }
   }
-  // Reload flags after auto-close
   const flSnap=await fs.getDocs(fs.query(fs.collection(db,'flags'),fs.where('resolved','==',false)));
-  openFlags=[];flSnap.forEach(d=>openFlags.push({id:d.id,...d.data()}));
+  openFlags=[];
+  flSnap.forEach(d=>{const f={id:d.id,...d.data()};if(f.type==='auto-closed'||f.type==='early-departure')openFlags.push(f);});
   updateFlagBadge();
 }
 
-// ── FLAG BADGE ─────────────────────────────────────────────
+// ── FLAGS ────────────────────────────────────────────────
 function updateFlagBadge(){
-  const btn=document.getElementById('tab-btn-reports');
-  if(!btn)return;
-  // Show badge on Genel tab's flags card instead
   const fc=document.getElementById('flags-card');
   if(!fc)return;
   if(openFlags.length>0){
     fc.style.display='block';
-    document.getElementById('flags-count').textContent=`${openFlags.length} işlem`;
+    document.getElementById('flags-count').textContent=`${openFlags.length} bildirim`;
     renderFlags();
   } else {
     fc.style.display='none';
@@ -651,54 +536,27 @@ function updateFlagBadge(){
 }
 
 function renderFlags(){
-  const el=document.getElementById('flag-list');
-  const badgeCfg={
-    'overtime-pending':['⏱ Fazla Mesai','overtime'],
-    'auto-closed':['🔒 Otomatik Kapandı','auto-closed'],
-    'early-departure':['⬅ Erken Çıkış','early-departure']
-  };
-  el.innerHTML=openFlags.map(f=>{
-    const cfg=badgeCfg[f.type]||['?',''];
+  const cfg={'auto-closed':['🔒 Otomatik Kapandı','auto-closed'],'early-departure':['⬅ Erken Çıkış','early-departure']};
+  document.getElementById('flag-list').innerHTML=openFlags.map(f=>{
+    const c=cfg[f.type]||['?',''];
     return `<div class="flag-item ${f.type}">
-      <div class="fi-top">
-        <div class="fi-name">${f.staffName}</div>
-        <span class="fi-badge ${cfg[1]}">${cfg[0]}</span>
-      </div>
+      <div class="fi-top"><div class="fi-name">${f.staffName}</div><span class="fi-badge ${c[1]}">${c[0]}</span></div>
       <div class="fi-note">${f.note}</div>
-      <div class="fi-actions">
-        ${f.type==='overtime-pending'
-          ? `<button class="fi-btn fi-approve" onclick="resolveFlag('${f.id}',true,'${f.sessionId}','${f.type}')">✓ Onayla</button>
-             <button class="fi-btn fi-reject" onclick="resolveFlag('${f.id}',false,'${f.sessionId}','${f.type}')">✕ Reddet</button>`
-          : `<button class="fi-btn fi-dismiss" onclick="resolveFlag('${f.id}',true,'${f.sessionId}','${f.type}')">Tamam</button>`
-        }
-      </div>
+      <div class="fi-actions"><button class="fi-btn" onclick="resolveFlag('${f.id}')">Tamam ✓</button></div>
     </div>`;
   }).join('');
 }
 
-async function resolveFlag(flagId, approved, sessionId, type){
+async function resolveFlag(flagId){
   try{
-    await fs.updateDoc(fs.doc(db,'flags',flagId),{resolved:true,approved,resolvedAt:Date.now()});
-    // If overtime was rejected, keep paidEnd at shift end (already set)
-    // If overtime was approved, update paidEnd to actual out time
-    if(type==='overtime-pending' && approved && sessionId){
-      const sessDoc=await fs.getDoc(fs.doc(db,'sessions',sessionId));
-      if(sessDoc.exists()){
-        const sess=sessDoc.data();
-        await fs.updateDoc(fs.doc(db,'sessions',sessionId),{
-          paidEnd:sess.out,
-          status:'normal',
-          overtimeApproved:true
-        });
-      }
-    }
-    toast(approved?'Onaylandı ✓':'Reddedildi');
+    await fs.updateDoc(fs.doc(db,'flags',flagId),{resolved:true,resolvedAt:Date.now()});
+    toast('Kapatıldı ✓');
     await loadAll();
     renderDashboard();
   }catch(e){toast('Hata oluştu');}
 }
 
-// ── DASHBOARD ─────────────────────────────────────────────
+// ── DASHBOARD ────────────────────────────────────────────
 async function renderDashboard(){
   let onDuty=0;
   const lg=document.getElementById('live-grid');
@@ -708,67 +566,51 @@ async function renderDashboard(){
     if(on)onDuty++;
     const mins=on?Math.floor((Date.now()-cs.in)/60000):0;
     const h=Math.floor(mins/60),m=mins%60;
-    // Get today's shift
     const shift=getTodayShift(s.id);
     return `<div class="live-card ${on?'on':'off'}">
       <div class="lc-av" style="background:${s.color||COLORS[0]}">${s.name.slice(0,2).toUpperCase()}</div>
       <div class="lc-name">${s.name}</div>
-      <div class="lc-role" style="font-size:.7rem;color:var(--muted)">${s.role}</div>
-      ${shift?`<div class="lc-time" style="font-size:.67rem;color:var(--blue)">${shift.startTime}–${shift.endTime}</div>`:''}
+      <div style="font-size:.7rem;color:var(--muted)">${s.role}</div>
+      ${shift?`<div class="lc-time" style="color:var(--blue)">${shift.startTime}–${shift.endTime}</div>`:''}
       <div class="lc-status ${on?'on':'off'}">${on?'● Görevde':'○ Dışarıda'}</div>
-      ${on?`<div class="lc-time">${ft(cs.in)} · ${h}s${m}d</div>`:''}
+      ${on?`<div class="lc-time">${ft(cs.in)} · ${h}s ${m}d</div>`:''}
     </div>`;
   }).join('');
   document.getElementById('duty-count').textContent=`${onDuty} / ${allStaff.length} görevde`;
 
-  // Today summary (use paidEnd/paidStart for accuracy)
   const s=dayStart(new Date()),e=s+86399999;
   const sess=await fetchSess(s,e);
-  const paidMs=sess.filter(x=>x.out).reduce((a,x)=>{
-    const ps=x.paidStart||x.in;
-    const pe=x.paidEnd||x.out;
-    return a+(pe-ps);
-  },0);
+  const totalMs=sess.filter(x=>x.out).reduce((a,x)=>a+(x.out-x.in),0);
   const unique=new Set(sess.map(x=>x.staffId)).size;
-  const pendingCount=openFlags.filter(f=>f.type==='overtime-pending').length;
 
   document.getElementById('today-sum').innerHTML=`
     <div class="sum-pill"><div class="sum-val">${onDuty}</div><div class="sum-lbl">Görevde</div></div>
     <div class="sum-pill"><div class="sum-val">${unique}</div><div class="sum-lbl">Bugün Çalıştı</div></div>
-    <div class="sum-pill"><div class="sum-val" style="font-size:1.2rem">${hm(paidMs)}</div><div class="sum-lbl">Ücretli Saat</div></div>
-    ${pendingCount>0?`<div class="sum-pill" style="background:var(--amber-s)"><div class="sum-val" style="color:var(--amber)">${pendingCount}</div><div class="sum-lbl">Onay Bekliyor</div></div>`:''}`;
+    <div class="sum-pill"><div class="sum-val" style="font-size:1.2rem">${hm(totalMs)}</div><div class="sum-lbl">Toplam Saat</div></div>`;
 
-  // Today log
   const tl=document.getElementById('today-log');
   if(!sess.length){tl.innerHTML='<div class="empty"><div class="eico">📋</div>Henüz giriş yok</div>';return;}
   tl.innerHTML=`<div class="lhdr"><span>Personel</span><span>Giriş</span><span>Çıkış</span><span>Saat</span></div>`
     +sess.map(s=>{
       const st=allStaff.find(x=>x.id===s.staffId);
-      const paidMs=s.out?(( (s.paidEnd||s.out)-(s.paidStart||s.in) )):null;
-      const dur=paidMs!==null?hm(paidMs):'–';
-      const chipHtml=s.status&&s.status!=='normal'&&s.status!=='active'
-        ?`<span class="schip ${s.status}">${statusLabel(s.status)}</span>`:'';
+      const dur=s.out?hm(s.out-s.in):'–';
       return `<div class="lrow">
-        <span class="lname">${st?.name||'?'}${chipHtml}</span>
+        <span class="lname">${st?.name||'?'}${statusChip(s.status)}</span>
         <span class="lin">${ft(s.in)}</span>
         <span class="lout">${s.out?ft(s.out):'Aktif'}</span>
         <span class="ldur">${dur}</span>
       </div>`;
     }).join('');
-
   updateFlagBadge();
 }
 
-function statusLabel(s){
-  return {
-    'auto-closed':'🔒 Oto.',
-    'overtime-pending':'⏱ Mesai',
-    'early-departure':'⬅ Erken',
-    'normal':''
-  }[s]||s;
+function statusChip(status){
+  if(!status||status==='normal'||status==='active')return'';
+  const cfg={'auto-closed':['🔒 Oto.','auto-closed'],'early-departure':['⬅ Erken','early-departure']}[status];
+  return cfg?`<span class="schip ${cfg[1]}">${cfg[0]}</span>`:'';
 }
 
-// ── REPORTS ───────────────────────────────────────────────
+// ── REPORTS ──────────────────────────────────────────────
 function swr(m){
   _rm=m;
   ['today','week','month'].forEach(x=>document.getElementById(`rt-${x}`).classList.toggle('active',x===m));
@@ -779,7 +621,8 @@ async function renderReport(){
   const el=document.getElementById('rbody');
   el.innerHTML='<div class="sw"><div class="sp"></div></div>';
   const dv=document.getElementById('rdate').value;
-  const ref=dv?new Date(dv):new Date();ref.setHours(12,0,0,0);
+  // Parse date as LOCAL time by appending T12:00:00 — avoids UTC rollback bug
+  const ref=dv?new Date(dv+'T12:00:00'):new Date();
   let from,to;
   if(_rm==='today'){from=dayStart(ref);to=from+86399999;}
   else if(_rm==='week'){const mon=weekMon(ref);from=mon;to=mon+7*86400000-1;}
@@ -792,50 +635,56 @@ async function renderReport(){
 
 function renderTodayRpt(sess){
   if(!sess.length)return emptyState('Bu gün için kayıt yok');
-  return `<div class="card"><div class="lhdr" style="grid-template-columns:1fr auto auto auto auto"><span>Personel</span><span>Giriş</span><span>Çıkış</span><span>Ücretli</span><span>Durum</span></div>`
-    +sess.map(s=>{
-      const st=allStaff.find(x=>x.id===s.staffId);
-      const paidMs=s.out?((s.paidEnd||s.out)-(s.paidStart||s.in)):null;
-      const dur=paidMs!==null?hm(paidMs):'–';
-      const chip=s.status&&s.status!=='normal'&&s.status!=='active'
-        ?`<span class="schip ${s.status}">${statusLabel(s.status)}</span>`:'✓';
-      return `<div class="lrow" style="grid-template-columns:1fr auto auto auto auto">
-        <span class="lname">${st?.name||'?'}</span>
-        <span class="lin">${ft(s.in)}</span>
-        <span class="lout">${s.out?ft(s.out):'Aktif'}</span>
-        <span class="ldur">${dur}</span>
-        <span>${chip}</span>
-      </div>`;
-    }).join('')+'</div>';
+  return `<div class="card">
+    <div class="lhdr" style="grid-template-columns:1fr auto auto auto auto">
+      <span>Personel</span><span>Giriş</span><span>Çıkış</span><span>Saat</span><span>Durum</span>
+    </div>`+sess.map(s=>{
+    const st=allStaff.find(x=>x.id===s.staffId);
+    const dur=s.out?hm(s.out-s.in):'–';
+    const chip=statusChip(s.status)||'<span style="color:var(--green);font-size:.75rem">✓</span>';
+    return `<div class="lrow" style="grid-template-columns:1fr auto auto auto auto">
+      <span class="lname">${st?.name||'?'}</span>
+      <span class="lin">${ft(s.in)}</span>
+      <span class="lout">${s.out?ft(s.out):'Aktif'}</span>
+      <span class="ldur">${dur}</span>
+      <span>${chip}</span>
+    </div>`;
+  }).join('')+'</div>';
 }
 
 function renderWeekRpt(sess,fromTs){
   const days=Array.from({length:7},(_,i)=>new Date(fromTs+i*86400000));
-  const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][iso(d)]=0;});});
+  const g={};
+  allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][isoLocal(d)]=0;});});
+
   sess.forEach(s=>{
     if(!s.out)return;
-    // Use paid times
-    const pStart=s.paidStart||s.in;
-    const pEnd=s.paidEnd||s.out;
-    let cur=pStart;
-    while(cur<pEnd){
-      const dayKey=iso(new Date(cur));
-      const dayEnd=new Date(cur);dayEnd.setHours(23,59,59,999);
-      const sliceEnd=Math.min(pEnd,dayEnd.getTime());
-      if(g[s.staffId]&&dayKey in g[s.staffId]) g[s.staffId][dayKey]+=sliceEnd-cur;
+    // Walk through actual worked time, bucketed by LOCAL date
+    let cur=s.in;
+    while(cur<s.out){
+      const localKey=isoLocal(new Date(cur));
+      const dayEnd=new Date(cur);
+      dayEnd.setHours(23,59,59,999);
+      const sliceEnd=Math.min(s.out,dayEnd.getTime());
+      if(g[s.staffId]&&localKey in g[s.staffId]){
+        g[s.staffId][localKey]+=sliceEnd-cur;
+      }
       cur=dayEnd.getTime()+1;
     }
   });
+
   const DL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-  const today=iso(new Date());
-  let html=`<div class="twrap"><table class="wtbl"><thead><tr><th>Personel</th>${DL.map((d,i)=>`<th style="${iso(days[i])===today?'background:#b81f3f':''}">${d}<br><small style="opacity:.6;font-size:.6rem">${days[i].getDate()}/${days[i].getMonth()+1}</small></th>`).join('')}<th>Toplam</th></tr></thead><tbody>`;
+  const todayLocal=isoLocal(new Date());
+  let html=`<div class="twrap"><table class="wtbl"><thead><tr>
+    <th>Personel</th>
+    ${DL.map((d,i)=>`<th style="${isoLocal(days[i])===todayLocal?'background:#b81f3f':''}">${d}<br><small style="opacity:.6;font-size:.6rem">${days[i].getDate()}/${days[i].getMonth()+1}</small></th>`).join('')}
+    <th>Toplam</th>
+  </tr></thead><tbody>`;
   allStaff.forEach(s=>{
     let tot=0;
     const cells=days.map(d=>{
-      const ms=g[s.id][iso(d)]||0;tot+=ms;
-      if(!ms)return`<td class="wz">–</td>`;
-      const ot=ms/3600000>OT_HOURS;
-      return`<td class="${ot?'wot':''}">${hm(ms)}</td>`;
+      const ms=g[s.id][isoLocal(d)]||0;tot+=ms;
+      return ms?`<td>${hm(ms)}</td>`:`<td class="wz">–</td>`;
     });
     html+=`<tr><td>${s.name}</td>${cells.join('')}<td class="wtot">${hm(tot)}</td></tr>`;
   });
@@ -844,16 +693,12 @@ function renderWeekRpt(sess,fromTs){
 
 function renderMonthRpt(sess){
   if(!sess.length)return emptyState('Bu ay için kayıt yok');
-  const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0,ot:0};});
+  const ps={};
+  allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0};});
   sess.forEach(s=>{
     if(!s.out)return;
-    const pStart=s.paidStart||s.in;
-    const pEnd=s.paidEnd||s.out;
-    const dur=pEnd-pStart;
-    const dh=dur/3600000;
-    ps[s.staffId].days.add(iso(new Date(s.in)));
-    ps[s.staffId].tot+=dur;
-    if(dh>OT_HOURS)ps[s.staffId].ot+=(dh-OT_HOURS)*3600000;
+    ps[s.staffId].days.add(isoLocal(new Date(s.in)));
+    ps[s.staffId].tot+=(s.out-s.in);
   });
   return `<div class="mcards">${allStaff.map(s=>{
     const d=ps[s.id];
@@ -865,83 +710,61 @@ function renderMonthRpt(sess){
         <div class="mname">${s.name} <span style="font-size:.7rem;color:var(--muted)">${s.role}</span></div>
         <div class="mstats">
           <div class="mstat"><div class="mval">${days}</div><div class="mlbl">Gün</div></div>
-          <div class="mstat"><div class="mval" style="font-size:.82rem">${hm(d.tot)}</div><div class="mlbl">Ücretli</div></div>
+          <div class="mstat"><div class="mval" style="font-size:.82rem">${hm(d.tot)}</div><div class="mlbl">Toplam Saat</div></div>
           <div class="mstat"><div class="mval" style="font-size:.82rem">${hm(avgMs)}</div><div class="mlbl">Ort. Vardiya</div></div>
-          <div class="mstat"><div class="mval ${d.ot>0?'ot':''}" style="font-size:.82rem">${hm(d.ot)}</div><div class="mlbl">Fazla Mesai</div></div>
         </div>
       </div>
     </div>`;
   }).join('')}</div>`;
 }
 
-// ── EXPORT CSV ────────────────────────────────────────────
+// ── EXPORT CSV ───────────────────────────────────────────
 function exportCSV(){
   if(!_ls.length){toast('Dışa aktarılacak veri yok');return;}
   let rows;
   if(_rm==='today'){
-    rows=[['Personel','Görev','Tarih','Gerçek Giriş','Gerçek Çıkış','Ücretli Başlangıç','Ücretli Bitiş','Ücretli Saat','Durum']];
+    rows=[['Personel','Görev','Tarih','Giriş','Çıkış','Toplam Saat','Durum']];
     _ls.forEach(s=>{
       const st=allStaff.find(x=>x.id===s.staffId)||{name:'?',role:'?'};
-      rows.push([
-        st.name,st.role,iso(new Date(s.in)),
-        ft(s.in),s.out?ft(s.out):'',
-        s.paidStart?ft(s.paidStart):'',s.paidEnd?ft(s.paidEnd):'',
-        s.paidEnd&&s.paidStart?((s.paidEnd-s.paidStart)/3600000).toFixed(2):'',
-        s.status||'normal'
-      ]);
+      rows.push([st.name,st.role,isoLocal(new Date(s.in)),ft(s.in),s.out?ft(s.out):'',s.out?((s.out-s.in)/3600000).toFixed(2):'',s.status||'normal']);
     });
   } else if(_rm==='week'){
     rows=[['Personel','Pzt','Sal','Çar','Per','Cum','Cmt','Paz','Toplam']];
-    const dv=document.getElementById('rdate').value;const ref=dv?new Date(dv):new Date();ref.setHours(12,0,0,0);
+    const dv=document.getElementById('rdate').value;
+    const ref=dv?new Date(dv+'T12:00:00'):new Date();
     const days=Array.from({length:7},(_,i)=>new Date(weekMon(ref)+i*86400000));
-    const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][iso(d)]=0;});});
+    const g={};allStaff.forEach(s=>{g[s.id]={};days.forEach(d=>{g[s.id][isoLocal(d)]=0;});});
     _ls.forEach(s=>{
       if(!s.out)return;
-      const k=iso(new Date(s.in));
-      const dur=((s.paidEnd||s.out)-(s.paidStart||s.in))/3600000;
-      if(g[s.staffId]&&k in g[s.staffId])g[s.staffId][k]+=dur;
+      const k=isoLocal(new Date(s.in));
+      if(g[s.staffId]&&k in g[s.staffId])g[s.staffId][k]+=(s.out-s.in)/3600000;
     });
-    allStaff.forEach(s=>{const c=days.map(d=>(g[s.id][iso(d)]||0).toFixed(1));rows.push([s.name,...c,c.reduce((a,v)=>a+parseFloat(v),0).toFixed(1)]);});
+    allStaff.forEach(s=>{const c=days.map(d=>(g[s.id][isoLocal(d)]||0).toFixed(1));rows.push([s.name,...c,c.reduce((a,v)=>a+parseFloat(v),0).toFixed(1)]);});
   } else {
-    rows=[['Personel','Görev','Çalışılan Gün','Toplam Ücretli Saat','Ort. Vardiya','Fazla Mesai']];
-    const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0,ot:0};});
-    _ls.forEach(s=>{
-      if(!s.out)return;
-      const dur=(s.paidEnd||s.out)-(s.paidStart||s.in);
-      const dh=dur/3600000;
-      ps[s.staffId].days.add(iso(new Date(s.in)));
-      ps[s.staffId].tot+=dur;
-      if(dh>OT_HOURS)ps[s.staffId].ot+=(dh-OT_HOURS)*3600000;
-    });
-    allStaff.forEach(s=>{
-      const d=ps[s.id];const days=d.days.size;
-      rows.push([s.name,s.role,days,(d.tot/3600000).toFixed(1),days?(d.tot/3600000/days).toFixed(1):'0.0',(d.ot/3600000).toFixed(1)]);
-    });
+    rows=[['Personel','Görev','Çalışılan Gün','Toplam Saat','Ort. Vardiya']];
+    const ps={};allStaff.forEach(s=>{ps[s.id]={days:new Set(),tot:0};});
+    _ls.forEach(s=>{if(!s.out)return;ps[s.staffId].days.add(isoLocal(new Date(s.in)));ps[s.staffId].tot+=(s.out-s.in);});
+    allStaff.forEach(s=>{const d=ps[s.id];const days=d.days.size;rows.push([s.name,s.role,days,(d.tot/3600000).toFixed(1),days?(d.tot/3600000/days).toFixed(1):'0.0']);});
   }
   const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`cafe-${_rm}-${iso(new Date())}.csv`;a.click();
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`cafe-${_rm}-${isoLocal(new Date())}.csv`;a.click();
   toast('CSV indirildi ✓');
 }
 
-// ── SHIFTS MANAGEMENT ─────────────────────────────────────
-function renderShiftsTab(){
-  renderShiftTemplates();
-  renderWeekSchedule();
-}
+// ── SHIFTS ───────────────────────────────────────────────
+function renderShiftsTab(){renderShiftTemplates();renderWeekSchedule();}
 
 function renderShiftTemplates(){
   const el=document.getElementById('shift-tmpl-list');
   if(!allShifts.length){el.innerHTML='<div class="empty"><div class="eico">📋</div>Henüz vardiya şablonu yok</div>';return;}
   el.innerHTML=allShifts.map(s=>`
     <div class="shift-tmpl">
-      <div class="st-color" style="background:var(--red)"></div>
+      <div class="st-dot"></div>
       <div class="st-info">
         <div class="st-name">${s.name}</div>
         <div class="st-time">${s.startTime} – ${s.endTime} · ${calcDur(s.startTime,s.endTime)} · Tampon: ${s.earlyBufferMinutes||30}dk</div>
       </div>
-      <div class="st-actions">
-        <button class="st-btn" onclick='openEditShift(${JSON.stringify({id:s.id,name:s.name,startTime:s.startTime,endTime:s.endTime,earlyBufferMinutes:s.earlyBufferMinutes||30,lateGraceMinutes:s.lateGraceMinutes||10})})'>Düzenle</button>
-      </div>
+      <div><button class="st-btn" onclick='openEditShift(${JSON.stringify({id:s.id,name:s.name,startTime:s.startTime,endTime:s.endTime,earlyBufferMinutes:s.earlyBufferMinutes||30})})'>Düzenle</button></div>
     </div>`).join('');
 }
 
@@ -956,65 +779,34 @@ function calcDur(start,end){
 
 function renderWeekSchedule(){
   const el=document.getElementById('week-schedule-wrap');
-  if(!allStaff.length||!allShifts.length){
-    el.innerHTML='<div class="empty" style="padding:20px">Önce personel ve vardiya şablonu ekleyin.</div>';
-    return;
-  }
-  // Day order: Mon(1) Tue(2) ... Sun(0) → reorder
+  if(!allStaff.length||!allShifts.length){el.innerHTML='<div class="empty" style="padding:20px">Önce personel ve vardiya şablonu ekleyin.</div>';return;}
   const orderedDays=['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
   const orderedLabels=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-
-  const shiftOptions=allShifts.map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-
-  let html=`<div class="week-sched">
-    <div class="ws-hdr">
-      <div class="ws-hdr-cell">Personel</div>
-      ${orderedLabels.map(l=>`<div class="ws-hdr-cell">${l}</div>`).join('')}
-    </div>`;
-
+  let html=`<div class="week-sched"><div class="ws-hdr"><div class="ws-hdr-cell">Personel</div>${orderedLabels.map(l=>`<div class="ws-hdr-cell">${l}</div>`).join('')}</div>`;
   allStaff.forEach(s=>{
     const sched=schedulesMap[s.id]||{weeklyTemplate:{}};
-    html+=`<div class="ws-row">
-      <div class="ws-name">${s.name}</div>
-      ${orderedDays.map(day=>{
-        const cur=sched.weeklyTemplate?.[day]||'';
-        const hasShift=!!cur;
-        return `<div class="ws-cell">
-          <select class="ws-select ${hasShift?'has-shift':'off'}"
-            data-staff="${s.id}" data-day="${day}"
-            onchange="onScheduleChange(this)">
-            <option value="">OFF</option>
-            ${allShifts.map(sh=>`<option value="${sh.id}" ${sh.id===cur?'selected':''}>${sh.name}</option>`).join('')}
-          </select>
-        </div>`;
-      }).join('')}
-    </div>`;
+    html+=`<div class="ws-row"><div class="ws-name">${s.name}</div>${orderedDays.map(day=>{
+      const cur=sched.weeklyTemplate?.[day]||'';
+      return `<div class="ws-cell"><select class="ws-select ${cur?'has-shift':'off'}" data-staff="${s.id}" data-day="${day}" onchange="onScheduleChange(this)">
+        <option value="">OFF</option>
+        ${allShifts.map(sh=>`<option value="${sh.id}" ${sh.id===cur?'selected':''}>${sh.name}</option>`).join('')}
+      </select></div>`;
+    }).join('')}</div>`;
   });
-  html+='</div>';
-  el.innerHTML=html;
+  el.innerHTML=html+'</div>';
 }
 
-function onScheduleChange(sel){
-  // Update visual immediately
-  sel.className=`ws-select ${sel.value?'has-shift':'off'}`;
-}
+function onScheduleChange(sel){sel.className=`ws-select ${sel.value?'has-shift':'off'}`;}
 
 async function saveAllSchedules(){
-  const selects=document.querySelectorAll('.ws-select');
   const updates={};
-  selects.forEach(sel=>{
-    const staffId=sel.dataset.staff;
-    const day=sel.dataset.day;
-    if(!updates[staffId]) updates[staffId]={};
-    updates[staffId][day]=sel.value||null;
+  document.querySelectorAll('.ws-select').forEach(sel=>{
+    if(!updates[sel.dataset.staff])updates[sel.dataset.staff]={};
+    updates[sel.dataset.staff][sel.dataset.day]=sel.value||null;
   });
   try{
     for(const [staffId,days] of Object.entries(updates)){
-      const existing=schedulesMap[staffId]||{};
-      await fs.setDoc(fs.doc(db,'schedules',staffId),{
-        ...existing,
-        weeklyTemplate:days
-      });
+      await fs.setDoc(fs.doc(db,'schedules',staffId),{...( schedulesMap[staffId]||{}),weeklyTemplate:days});
     }
     await loadAll();
     toast('Program kaydedildi ✓');
@@ -1028,7 +820,6 @@ function openAddShift(){
   document.getElementById('sh-start').value='09:30';
   document.getElementById('sh-end').value='17:00';
   document.getElementById('sh-buffer').value='30';
-  document.getElementById('sh-grace').value='10';
   document.getElementById('shm-del').style.display='none';
   document.getElementById('shift-modal').classList.add('open');
 }
@@ -1041,7 +832,6 @@ function openEditShift(s){
   document.getElementById('sh-start').value=s.startTime;
   document.getElementById('sh-end').value=s.endTime;
   document.getElementById('sh-buffer').value=s.earlyBufferMinutes||30;
-  document.getElementById('sh-grace').value=s.lateGraceMinutes||10;
   document.getElementById('shm-del').style.display='inline-block';
   document.getElementById('shift-modal').classList.add('open');
 }
@@ -1051,31 +841,20 @@ async function saveShift(){
   const startTime=document.getElementById('sh-start').value;
   const endTime=document.getElementById('sh-end').value;
   const earlyBufferMinutes=parseInt(document.getElementById('sh-buffer').value)||30;
-  const lateGraceMinutes=parseInt(document.getElementById('sh-grace').value)||10;
   if(!name||!startTime||!endTime){toast('Tüm alanları doldurun');return;}
-  const data={name,startTime,endTime,earlyBufferMinutes,lateGraceMinutes};
-  if(_editShiftId){
-    await fs.updateDoc(fs.doc(db,'shifts',_editShiftId),data);
-    toast(`${name} güncellendi ✓`);
-  } else {
-    await fs.addDoc(fs.collection(db,'shifts'),data);
-    toast(`${name} eklendi ✓`);
-  }
-  closeModal('shift-modal');
-  await loadAll();
-  renderShiftsTab();
+  const data={name,startTime,endTime,earlyBufferMinutes};
+  if(_editShiftId){await fs.updateDoc(fs.doc(db,'shifts',_editShiftId),data);toast(`${name} güncellendi ✓`);}
+  else{await fs.addDoc(fs.collection(db,'shifts'),data);toast(`${name} eklendi ✓`);}
+  closeModal('shift-modal');await loadAll();renderShiftsTab();
 }
 
 async function deleteShift(){
   if(!confirm('Bu vardiya şablonunu sil?'))return;
   await fs.deleteDoc(fs.doc(db,'shifts',_editShiftId));
-  toast('Vardiya silindi');
-  closeModal('shift-modal');
-  await loadAll();
-  renderShiftsTab();
+  toast('Vardiya silindi');closeModal('shift-modal');await loadAll();renderShiftsTab();
 }
 
-// ── STAFF MANAGEMENT ──────────────────────────────────────
+// ── STAFF ────────────────────────────────────────────────
 function renderStaffAdmin(){
   const el=document.getElementById('staff-admin-list');
   if(!allStaff.length){el.innerHTML='<div class="empty"><div class="eico">👤</div>Henüz personel yok</div>';return;}
@@ -1088,7 +867,7 @@ function renderStaffAdmin(){
         <div class="sia-role">${s.role} · PIN: ${s.password}${shift?` · Bugün: ${shift.name}`:' · Bugün: –'}</div>
       </div>
       <div class="sia-actions">
-        <button class="sia-btn sia-edit" onclick='openEditStaff(${JSON.stringify({id:s.id,name:s.name,role:s.role,password:s.password,color:s.color})})'>Düzenle</button>
+        <button class="sia-btn" onclick='openEditStaff(${JSON.stringify({id:s.id,name:s.name,role:s.role,password:s.password,color:s.color})})'>Düzenle</button>
       </div>
     </div>`;
   }).join('');
@@ -1096,33 +875,24 @@ function renderStaffAdmin(){
 
 function buildColorGrid(){
   document.getElementById('color-grid').innerHTML=COLORS.map((c,i)=>
-    `<div class="col-swatch${i===0?' sel':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`
-  ).join('');
+    `<div class="col-swatch${i===0?' sel':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('');
 }
-function selectColor(c,el){
-  _selColor=c;
-  document.querySelectorAll('.col-swatch').forEach(x=>x.classList.remove('sel'));
-  el.classList.add('sel');
-}
+function selectColor(c,el){_selColor=c;document.querySelectorAll('.col-swatch').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');}
 
 function openAddStaff(){
   _editStaffId=null;
   document.getElementById('sm-title').textContent='Personel Ekle';
-  document.getElementById('sf-name').value='';
-  document.getElementById('sf-role').value='Garson';
-  document.getElementById('sf-pw').value='';
+  document.getElementById('sf-name').value='';document.getElementById('sf-role').value='Garson';document.getElementById('sf-pw').value='';
   document.getElementById('sm-del').style.display='none';
-  _selColor=COLORS[0];
-  document.querySelectorAll('.col-swatch').forEach((el,i)=>el.classList.toggle('sel',i===0));
+  _selColor=COLORS[0];document.querySelectorAll('.col-swatch').forEach((el,i)=>el.classList.toggle('sel',i===0));
   document.getElementById('staff-modal').classList.add('open');
 }
+
 function openEditStaff(s){
   if(typeof s==='string')s=JSON.parse(s);
   _editStaffId=s.id;
   document.getElementById('sm-title').textContent='Personeli Düzenle';
-  document.getElementById('sf-name').value=s.name;
-  document.getElementById('sf-role').value=s.role;
-  document.getElementById('sf-pw').value=s.password;
+  document.getElementById('sf-name').value=s.name;document.getElementById('sf-role').value=s.role;document.getElementById('sf-pw').value=s.password;
   document.getElementById('sm-del').style.display='inline-block';
   _selColor=s.color||COLORS[0];
   document.querySelectorAll('.col-swatch').forEach(el=>el.classList.toggle('sel',el.style.background===_selColor||el.style.backgroundColor===_selColor));
@@ -1136,47 +906,35 @@ async function saveStaff(){
   if(!name){toast('Ad zorunludur');return;}
   if(!pw){toast('PIN zorunludur');return;}
   const data={name,role,password:pw,color:_selColor};
-  if(_editStaffId){
-    await fs.updateDoc(fs.doc(db,'staff',_editStaffId),data);
-    toast(`${name} güncellendi ✓`);
-  } else {
-    await fs.addDoc(fs.collection(db,'staff'),data);
-    toast(`${name} eklendi ✓`);
-  }
-  closeModal('staff-modal');
-  await loadAll();
-  renderStaffAdmin();
+  if(_editStaffId){await fs.updateDoc(fs.doc(db,'staff',_editStaffId),data);toast(`${name} güncellendi ✓`);}
+  else{await fs.addDoc(fs.collection(db,'staff'),data);toast(`${name} eklendi ✓`);}
+  closeModal('staff-modal');await loadAll();renderStaffAdmin();
 }
 
 async function deleteStaff(){
-  if(!confirm(`${document.getElementById('sf-name').value} adlı personeli sil? Bu işlem geri alınamaz.`))return;
+  if(!confirm(`${document.getElementById('sf-name').value} adlı personeli sil?`))return;
   await fs.deleteDoc(fs.doc(db,'staff',_editStaffId));
-  toast('Personel silindi');
-  closeModal('staff-modal');
-  await loadAll();
-  renderStaffAdmin();
+  toast('Personel silindi');closeModal('staff-modal');await loadAll();renderStaffAdmin();
 }
 
-// ── EDIT RECORDS ──────────────────────────────────────────
+// ── EDIT RECORDS ─────────────────────────────────────────
 async function loadLogRecords(){
   const dv=document.getElementById('log-date').value;
   if(!dv)return;
-  const from=new Date(dv);from.setHours(0,0,0,0);
-  const to=from.getTime()+86399999;
-  const sess=await fetchSess(from.getTime(),to);
+  const from=new Date(dv+'T00:00:00').getTime();
+  const to=from+86399999;
+  const sess=await fetchSess(from,to);
   const el=document.getElementById('log-records');
   if(!sess.length){el.innerHTML=`<div class="empty"><div class="eico">📋</div>Bu tarih için kayıt yok</div>`;return;}
   el.innerHTML=`<div class="card">
     <div class="lhdr" style="grid-template-columns:1fr auto auto auto auto auto">
-      <span>Personel</span><span>Giriş</span><span>Çıkış</span><span>Ücretli</span><span>Durum</span><span></span>
+      <span>Personel</span><span>Giriş</span><span>Çıkış</span><span>Saat</span><span>Durum</span><span></span>
     </div>`+
     sess.map(s=>{
       const st=allStaff.find(x=>x.id===s.staffId);
-      const paidMs=s.out?(( (s.paidEnd||s.out)-(s.paidStart||s.in) )):null;
-      const dur=paidMs!==null?hm(paidMs):'–';
-      const chip=s.status&&s.status!=='normal'&&s.status!=='active'
-        ?`<span class="schip ${s.status}">${statusLabel(s.status)}</span>`:'<span style="color:var(--green);font-size:.75rem">✓</span>';
-      const safeS=JSON.stringify({id:s.id,staffId:s.staffId,in:s.in,out:s.out,paidStart:s.paidStart,paidEnd:s.paidEnd,status:s.status}).replace(/'/g,"&#39;");
+      const dur=s.out?hm(s.out-s.in):'–';
+      const chip=statusChip(s.status)||'<span style="color:var(--green);font-size:.75rem">✓</span>';
+      const safeS=JSON.stringify({id:s.id,staffId:s.staffId,in:s.in,out:s.out,status:s.status}).replace(/'/g,"&#39;");
       return `<div class="lrow" style="grid-template-columns:1fr auto auto auto auto auto">
         <span class="lname">${st?.name||'?'}</span>
         <span class="lin">${ft(s.in)}</span>
@@ -1192,13 +950,12 @@ function openEditSession(s){
   if(typeof s==='string')s=JSON.parse(s);
   _editSessionId=s.id;
   const st=allStaff.find(x=>x.id===s.staffId);
-  document.getElementById('esm-title').textContent='Kaydı Düzenle';
   document.getElementById('es-staff').value=st?.name||'?';
   const inDate=new Date(s.in);
-  document.getElementById('es-date').value=iso(inDate);
+  document.getElementById('es-date').value=isoLocal(inDate);
   document.getElementById('es-in').value=`${String(inDate.getHours()).padStart(2,'0')}:${String(inDate.getMinutes()).padStart(2,'0')}`;
   const outDate=s.out?new Date(s.out):inDate;
-  document.getElementById('es-out-date').value=iso(outDate);
+  document.getElementById('es-out-date').value=isoLocal(outDate);
   document.getElementById('es-out').value=s.out?`${String(outDate.getHours()).padStart(2,'0')}:${String(outDate.getMinutes()).padStart(2,'0')}`:'';
   document.getElementById('es-status').value=s.status||'normal';
   document.getElementById('session-modal').classList.add('open');
@@ -1211,31 +968,25 @@ async function saveSession(){
   const outTime=document.getElementById('es-out').value;
   const status=document.getElementById('es-status').value;
   if(!dateStr||!inTime){toast('Tarih ve giriş saati zorunludur');return;}
-  const inTs=new Date(`${dateStr}T${inTime}`).getTime();
+  const inTs=new Date(`${dateStr}T${inTime}:00`).getTime();
   let outTs=null;
   if(outTime){
     let useOutDate=outDateStr||dateStr;
-    outTs=new Date(`${useOutDate}T${outTime}`).getTime();
-    if(outTs<=inTs&&!outDateStr){
-      outTs=new Date(`${iso(new Date(inTs+86400000))}T${outTime}`).getTime();
-    }
+    outTs=new Date(`${useOutDate}T${outTime}:00`).getTime();
+    if(outTs<=inTs&&!outDateStr){outTs=new Date(`${isoLocal(new Date(inTs+86400000))}T${outTime}:00`).getTime();}
     if(outTs<=inTs){toast('Çıkış saati girişten önce — çıkış tarihini kontrol edin');return;}
   }
-  await fs.updateDoc(fs.doc(db,'sessions',_editSessionId),{in:inTs,out:outTs,status});
-  toast('Kayıt güncellendi ✓');
-  closeModal('session-modal');
-  loadLogRecords();
+  await fs.updateDoc(fs.doc(db,'sessions',_editSessionId),{in:inTs,out:outTs,paidStart:inTs,paidEnd:outTs||null,status});
+  toast('Kayıt güncellendi ✓');closeModal('session-modal');loadLogRecords();
 }
 
 async function deleteSession(){
-  if(!confirm('Bu kaydı sil? Bu işlem geri alınamaz.'))return;
+  if(!confirm('Bu kaydı sil?'))return;
   await fs.deleteDoc(fs.doc(db,'sessions',_editSessionId));
-  toast('Kayıt silindi');
-  closeModal('session-modal');
-  loadLogRecords();
+  toast('Kayıt silindi');closeModal('session-modal');loadLogRecords();
 }
 
-// ── NAV ───────────────────────────────────────────────────
+// ── NAV ──────────────────────────────────────────────────
 function showTab(name,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));
@@ -1248,26 +999,24 @@ function showTab(name,btn){
   else if(name==='log'){document.getElementById('log-records').innerHTML='';loadLogRecords();}
 }
 
-// ── UTILS ─────────────────────────────────────────────────
+// ── UTILS ────────────────────────────────────────────────
 function getTodayShift(staffId){
   const todayKey=DAY_KEYS[new Date().getDay()];
-  const todayIso=iso(new Date());
+  const todayIso=isoLocal(new Date());
   const sched=schedulesMap[staffId];
   if(!sched)return null;
-  if(sched.overrides&&sched.overrides[todayIso]!==undefined){
-    const ov=sched.overrides[todayIso];
-    if(!ov)return null;
-    return allShifts.find(s=>s.id===ov)||null;
-  }
+  if(sched.overrides&&sched.overrides[todayIso]!==undefined){const ov=sched.overrides[todayIso];if(!ov)return null;return allShifts.find(s=>s.id===ov)||null;}
   const shiftId=sched.weeklyTemplate&&sched.weeklyTemplate[todayKey];
   if(!shiftId)return null;
   return allShifts.find(s=>s.id===shiftId)||null;
 }
 
-function shiftTs(timeStr){
-  const [h,m]=timeStr.split(':').map(Number);
-  const d=new Date();d.setHours(h,m,0,0);
-  return d.getTime();
+function shiftTs(timeStr){const [h,m]=timeStr.split(':').map(Number);const d=new Date();d.setHours(h,m,0,0);return d.getTime();}
+
+// THE KEY FIX: always use local date, never UTC
+// new Date().toISOString() returns UTC which is 3 hours behind Turkey — this caused the weekly date bug
+function isoLocal(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
 function closeModal(id){document.getElementById(id).classList.remove('open');}
@@ -1276,17 +1025,11 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 async function fetchSess(from,to){
   const q=fs.query(fs.collection(db,'sessions'),fs.where('in','>=',from-43200000),fs.where('in','<=',to+43200000));
   const snap=await fs.getDocs(q);const rows=[];
-  snap.forEach(d=>{
-    const s={id:d.id,...d.data()};
-    const inRange=s.in>=from&&s.in<=to;
-    const outRange=s.out&&s.out>=from&&s.out<=to;
-    if(inRange||outRange) rows.push(s);
-  });
+  snap.forEach(d=>{const s={id:d.id,...d.data()};const inR=s.in>=from&&s.in<=to;const outR=s.out&&s.out>=from&&s.out<=to;if(inR||outR)rows.push(s);});
   return rows.sort((a,b)=>b.in-a.in);
 }
 
 function ft(ts){return new Date(ts).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});}
-function iso(d){return new Date(d).toISOString().slice(0,10);}
 function hm(ms){if(!ms||ms<=0)return'–';const tot=Math.round(ms/60000);const h=Math.floor(tot/60);const m=tot%60;if(h===0)return`${m}d`;if(m===0)return`${h}s`;return`${h}s ${m}d`;}
 function dayStart(d){const r=new Date(d);r.setHours(0,0,0,0);return r.getTime();}
 function weekMon(d){const day=d.getDay(),r=new Date(d);r.setDate(d.getDate()-day+(day===0?-6:1));r.setHours(0,0,0,0);return r.getTime();}
